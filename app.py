@@ -46,25 +46,37 @@ RI = {1: 0.00, 2: 0.00, 3: 0.58, 4: 0.90, 5: 1.12,
       6: 1.24, 7: 1.32, 8: 1.41, 9: 1.45, 10: 1.49}
 
 # 화면은 1·3·5·7·9만 보여주고 내부에는 signed integer로 저장
-SCALE = [-9, -7, -5, -3, 1, 3, 5, 7, 9]
 
+SCALE = [9, 7, 5, 3, 1, -3, -5, -7, -9]
 
-# 화면 가독성 개선
 st.markdown("""
 <style>
 .block-container {max-width: 980px; padding-top: 2rem; padding-bottom: 4rem;}
-h1 {font-size: 2.15rem !important;}
-h2 {font-size: 1.55rem !important;}
-h3 {font-size: 1.2rem !important;}
-div[data-testid="stCaptionContainer"] {font-size: .92rem;}
-.ahp-question {
- border: 1px solid #e5e7eb; border-radius: 12px;
- padding: 1rem 1.1rem .6rem; margin: .8rem 0 .5rem;
- background: #fafafa;
+.ahp-card {border:1px solid #e5e7eb; border-radius:14px; padding:1rem 1.15rem .8rem; margin:.9rem 0 .55rem; background:#fafafa;}
+.ahp-qno {font-size:.90rem; font-weight:700; color:#4b5563; margin-bottom:.35rem;}
+.ahp-pair {font-size:1.06rem; font-weight:700; line-height:1.55;}
+.ahp-scale-wrap {padding: 0 0.55rem; margin-top: .15rem;}
+.ahp-score-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    align-items: center;
+    text-align: center;
+    margin: 0 0 .12rem 0;
+    font-size: .88rem;
+    font-weight: 700;
+    color: #374151;
 }
-.ahp-qno {font-size:.9rem; font-weight:700; margin-bottom:.35rem;}
-.ahp-pair {font-size:1.05rem; font-weight:650; line-height:1.55;}
-.ahp-guide {font-size:.84rem; color:#6b7280; margin-top:.3rem;}
+.ahp-score-grid span {display:block;}
+.ahp-score-help {
+    display:grid;
+    grid-template-columns: 4fr 1fr 4fr;
+    text-align:center;
+    margin: 0 0 .45rem 0;
+    font-size:.78rem;
+    color:#6b7280;
+}
+div[data-baseweb="slider"] {padding-left: .55rem; padding-right: .55rem;}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -123,18 +135,50 @@ def label_for_value(v, left, right):
     return f"{right} {abs(v)}"
 
 
+def selection_sentence(v, left, right):
+    if v == 1:
+        return f"**현재 선택:** {left}와 {right}가 **동등하게 중요(1)**"
+    if v > 0:
+        return f"**현재 선택:** {left}가 {right}보다 **{v}점 수준으로 더 중요**"
+    return f"**현재 선택:** {right}가 {left}보다 **{abs(v)}점 수준으로 더 중요**"
+
+
 def ahp_question(key, left, right, help_text=None):
-    """한 개의 쌍대비교 입력. signed integer 반환."""
     labels = [label_for_value(v, left, right) for v in SCALE]
-    # 가운데(동등 1)를 초기값으로 둠
+
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown(f"**← {left}가 더 중요**")
+    with c2:
+        st.markdown(f"<div style='text-align:right'><b>{right}가 더 중요 →</b></div>", unsafe_allow_html=True)
+
+    st.markdown(
+        """
+        <div class="ahp-scale-wrap">
+            <div class="ahp-score-grid">
+                <span>9</span><span>7</span><span>5</span><span>3</span>
+                <span>1</span>
+                <span>3</span><span>5</span><span>7</span><span>9</span>
+            </div>
+            <div class="ahp-score-help">
+                <span>왼쪽 기준 중요</span><span>동등</span><span>오른쪽 기준 중요</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
     selected = st.select_slider(
-        f"{left} ↔ {right}",
+        "중요도 선택",
         options=labels,
         value="동등 1",
         key=key,
         help=help_text,
+        label_visibility="collapsed",
     )
-    return SCALE[labels.index(selected)]
+    v = SCALE[labels.index(selected)]
+    st.markdown(selection_sentence(v, left, right))
+    return v
 
 
 def show_cr_box(title, values, labels):
@@ -231,7 +275,7 @@ if st.session_state.page == 1:
 elif st.session_state.page == 2:
     st.header("2. 사업 우선순위 평가기준의 중요도")
     st.write("두 기준을 비교하여 **어느 기준이 더 중요하며, 그 정도가 어느 수준인지** 선택해 주십시오.")
-    st.info("선택 기준: 1=동등 · 3=약간 중요 · 5=중요 · 7=매우 중요 · 9=절대적으로 중요")
+    st.info("점수 기준: 1=동등 · 3=약간 중요 · 5=중요 · 7=매우 중요 · 9=절대적으로 중요")
 
     with st.expander("평가기준 설명", expanded=True):
         for code, name, desc in CRIT:
@@ -242,15 +286,9 @@ elif st.session_state.page == 2:
     for qn, (i, j) in enumerate(crit_pairs, 1):
         left = f"{CRIT[i][0]} {CRIT[i][1]}"
         right = f"{CRIT[j][0]} {CRIT[j][1]}"
-        st.markdown(
-            f"""<div class="ahp-question">
-            <div class="ahp-qno">문항 {qn} / {len(crit_pairs)}</div>
-            <div class="ahp-pair">{left} ↔ {right}</div>
-            <div class="ahp-guide">가운데는 동등(1)입니다. 더 중요하다고 판단하는 기준 쪽으로 이동해 주십시오.</div>
-            </div>""",
-            unsafe_allow_html=True,
-        )
+        st.markdown(f"""<div class="ahp-card"><div class="ahp-qno">문항 {qn} / {len(crit_pairs)}</div><div class="ahp-pair">{left} ↔ {right}</div></div>""", unsafe_allow_html=True)
         vals.append(ahp_question(f"crit_{i}_{j}", left, right))
+        st.divider()
 
     labels = [f"{c} {n}" for c, n, _ in CRIT]
     w, cr = show_cr_box("평가기준", vals, labels)
