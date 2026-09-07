@@ -160,9 +160,6 @@ def ahp_question(key, left, right, help_text=None):
                 <span>1</span>
                 <span>3</span><span>5</span><span>7</span><span>9</span>
             </div>
-            <div class="ahp-score-help">
-                <span>왼쪽 기준 중요</span><span>동등</span><span>오른쪽 기준 중요</span>
-            </div>
         </div>
         """,
         unsafe_allow_html=True,
