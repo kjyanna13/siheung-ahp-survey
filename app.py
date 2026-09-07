@@ -31,13 +31,13 @@ from taskdata import TASKS
 st.set_page_config(
     page_title="시흥시 지역균형발전 전문가 AHP 조사",
     page_icon="📊",
-    layout="wide",
+    layout="centered",
 )
 
 CRIT = [
     ("K1", "정책적 중요도", "균형발전 목표 달성에 대한 기여"),
     ("K2", "주민 체감·수요", "통장 수요조사에서 나타난 현장 시급성"),
-    ("K3", "격차기여 유형", "격차해소형(Ⅰ)인가, 기반유지(Ⅱ)·성장거점(Ⅲ)인가"),
+    ("K3", "격차 완화 기여도", "생활권 간·지역 간 격차 완화에 대한 기여 정도"),
     ("K4", "실행 가능성", "재원·권한·기간과 소관 부서의 수용 가능성"),
     ("K5", "파급·연계 효과", "다른 분야·생활권으로의 확산과 사업 간 연계"),
 ]
@@ -47,6 +47,26 @@ RI = {1: 0.00, 2: 0.00, 3: 0.58, 4: 0.90, 5: 1.12,
 
 # 화면은 1·3·5·7·9만 보여주고 내부에는 signed integer로 저장
 SCALE = [-9, -7, -5, -3, 1, 3, 5, 7, 9]
+
+
+# 화면 가독성 개선
+st.markdown("""
+<style>
+.block-container {max-width: 980px; padding-top: 2rem; padding-bottom: 4rem;}
+h1 {font-size: 2.15rem !important;}
+h2 {font-size: 1.55rem !important;}
+h3 {font-size: 1.2rem !important;}
+div[data-testid="stCaptionContainer"] {font-size: .92rem;}
+.ahp-question {
+ border: 1px solid #e5e7eb; border-radius: 12px;
+ padding: 1rem 1.1rem .6rem; margin: .8rem 0 .5rem;
+ background: #fafafa;
+}
+.ahp-qno {font-size:.9rem; font-weight:700; margin-bottom:.35rem;}
+.ahp-pair {font-size:1.05rem; font-weight:650; line-height:1.55;}
+.ahp-guide {font-size:.84rem; color:#6b7280; margin-top:.3rem;}
+</style>
+""", unsafe_allow_html=True)
 
 
 # -----------------------------------------------------------------------------
@@ -210,8 +230,8 @@ if st.session_state.page == 1:
 # -----------------------------------------------------------------------------
 elif st.session_state.page == 2:
     st.header("2. 사업 우선순위 평가기준의 중요도")
-    st.write("두 기준 중 어느 기준이 더 중요하다고 판단하는지 선택해 주십시오.")
-    st.caption("1=동등, 3=약간 중요, 5=중요, 7=매우 중요, 9=절대적으로 중요")
+    st.write("두 기준을 비교하여 **어느 기준이 더 중요하며, 그 정도가 어느 수준인지** 선택해 주십시오.")
+    st.info("선택 기준: 1=동등 · 3=약간 중요 · 5=중요 · 7=매우 중요 · 9=절대적으로 중요")
 
     with st.expander("평가기준 설명", expanded=True):
         for code, name, desc in CRIT:
@@ -222,9 +242,15 @@ elif st.session_state.page == 2:
     for qn, (i, j) in enumerate(crit_pairs, 1):
         left = f"{CRIT[i][0]} {CRIT[i][1]}"
         right = f"{CRIT[j][0]} {CRIT[j][1]}"
-        st.markdown(f"**문항 {qn}**")
+        st.markdown(
+            f"""<div class="ahp-question">
+            <div class="ahp-qno">문항 {qn} / {len(crit_pairs)}</div>
+            <div class="ahp-pair">{left} ↔ {right}</div>
+            <div class="ahp-guide">가운데는 동등(1)입니다. 더 중요하다고 판단하는 기준 쪽으로 이동해 주십시오.</div>
+            </div>""",
+            unsafe_allow_html=True,
+        )
         vals.append(ahp_question(f"crit_{i}_{j}", left, right))
-        st.divider()
 
     labels = [f"{c} {n}" for c, n, _ in CRIT]
     w, cr = show_cr_box("평가기준", vals, labels)
