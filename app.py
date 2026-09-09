@@ -86,18 +86,13 @@ def is_general():
 
 
 # ── 문항 위젯 ─────────────────────────────────────────────────
-def _label(v, left, right):
-    if v == 1:
-        return "동등 1"
-    return f"{left} {v}" if v > 0 else f"{right} {abs(v)}"
-
-
-def ahp_question(key, left, right, qno, qtot):
+def ahp_question(key, left, right, qno, qtot, default_value=1):
     st.markdown(
         f'<div class="ahp-card"><div class="ahp-qno">문항 {qno} / {qtot}</div>'
         f'<div class="ahp-pair">{left}'
         f'<span class="ahp-sep">—</span>{right}</div></div>',
         unsafe_allow_html=True)
+
     st.markdown(
         f'<div class="ahp-ends"><span>← {left}</span><span>{right} →</span></div>'
         '<div class="ahp-score-grid">'
@@ -106,9 +101,21 @@ def ahp_question(key, left, right, qno, qtot):
         unsafe_allow_html=True)
 
     labels = [_label(v, left, right) for v in SCALE]
-    picked = st.select_slider(" ", options=labels, value="동등 1",
-                              key=key, label_visibility="collapsed")
+
+    default_label = _label(default_value, left, right)
+
+    if key not in st.session_state:
+        st.session_state[key] = default_label
+
+    picked = st.select_slider(
+        " ",
+        options=labels,
+        key=key,
+        label_visibility="collapsed"
+    )
+
     v = SCALE[labels.index(picked)]
+
     if v == 1:
         msg = f"<b>{left}</b>와 <b>{right}</b>가 <b>동등하게 중요</b> (1)"
     elif v > 0:
@@ -117,39 +124,13 @@ def ahp_question(key, left, right, qno, qtot):
     else:
         msg = (f"<b>{right}</b>가 <b>{left}</b>보다 <b>더 중요</b> "
                f"— {abs(v)}점 · {SCALE_HELP[abs(v)]}")
-    st.markdown(f'<div class="ahp-pick">↳ {msg}</div>', unsafe_allow_html=True)
+
+    st.markdown(
+        f'<div class="ahp-pick">↳ {msg}</div>',
+        unsafe_allow_html=True
+    )
+
     return v
-
-
-def show_block_diag(title, values, labels, extra_transitivity=False):
-    r = core.block_result(values, labels)
-    st.markdown(f"**{title} · 일관성 점검**")
-    if r["status"] == "적정":
-        st.success(r["message"])
-    elif r["status"] == "재검토":
-        st.warning(r["message"])
-        if r["worst"]:
-            st.caption("전체 판단구조와 어긋나는 정도가 큰 비교입니다. "
-                       "틀렸다는 뜻은 아니며, 먼저 다시 볼 문항입니다.")
-            for i, (a, b) in enumerate(r["worst"], 1):
-                st.write(f"{i}. {a} ↔ {b}")
-    else:
-        st.info(r["message"])
-        if r["extreme"]:
-            st.warning("두 항목 모두 척도 양극단(9)으로 응답하셨습니다. "
-                       "의도한 판단인지 확인해 주십시오.")
-
-    if extra_transitivity:
-        viol, tot = core.transitivity_violations(values, labels)
-        r["transitivity"] = [list(v) for v in viol]
-        if viol:
-            st.warning(f"전이성 검사 : 삼각형 {tot}개 중 {len(viol)}건 위반")
-            for a, b, c in viol:
-                st.write(f"· **{a}** > **{b}**, **{b}** > **{c}** 인데 "
-                         f"**{a}** ≤ **{c}** 로 응답되었습니다.")
-        else:
-            st.success(f"전이성 검사 : 삼각형 {tot}개 모두 통과")
-    return r
 
 
 # ── 헤더 ──────────────────────────────────────────────────────
@@ -216,43 +197,95 @@ if st.session_state.page == 1:
 
 # ═════════════════════════ 2. 평가기준 ════════════════════════
 elif st.session_state.page == 2:
-    st.header(f"Ⅱ. 평가기준 간 상대적 중요도 ({len(CRIT_PAIRS)}문항)")
-    st.write("우선순위 핵심과제를 선정할 때 **어느 기준을 더 비중 있게 보아야 하는지** 여쭙습니다.")
+    st.header(f"평가기준 간 상대적 중요도 ({len(CRIT_PAIRS)}문항)")
 
-    with st.expander("평가기준 4개", expanded=True):
+    st.write(
+        "지역균형발전 핵심과제의 우선순위를 판단할 때, "
+        "**각 평가기준을 어느 정도 중요하게 고려해야 하는지** 평가해 주십시오."
+    )
+
+    # ── 평가기준 설명 ─────────────────────────────────────────
+    with st.expander("평가기준 4개 보기", expanded=True):
         for code, nm, qq, src in CRIT:
-            st.markdown(f"**{code} {nm}** — {qq}  \n<small>점수 출처 : {src}</small>",
-                        unsafe_allow_html=True)
-        st.caption("구 「격차기여 유형」은 제4장 사업 분류값의 파생이라 진단이 두 번 "
-                   "반영되는 이중 계산이므로 평가기준에서 제외했습니다. "
-                   "결과표에는 병기하되 점수 산정에는 쓰지 않습니다.")
+            st.markdown(
+                f"**{code} {nm}** — {qq}"
+            )
 
-    st.info("척도 : 1 동등 · 3 약간 더 중요 · 5 뚜렷하게 더 중요 · "
-            "7 매우 더 중요 · 9 절대적으로 더 중요")
+    # ── 쌍대비교 방법 안내 ─────────────────────────────────────
+    st.info(
+        "평가방법 : 두 기준을 비교하여 **어느 기준이 더 중요한지**와 "
+        "**그 중요도의 정도**를 선택해 주십시오. "
+        "두 기준이 비슷하게 중요하면 **'동등(1)'**을 선택합니다.\n\n"
+        "**척도 :** 1 동등 · 3 약간 더 중요 · 5 뚜렷하게 더 중요 · "
+        "7 매우 더 중요 · 9 절대적으로 더 중요"
+    )
 
+    # ── 평가기준 명칭 ─────────────────────────────────────────
     labels = [f"{c} {n}" for c, n, _q, _s in CRIT]
+
+    # 이전 응답이 있으면 불러오기
+    saved_vals = st.session_state.get("crit_vals", [])
     vals = []
+
+    # ── 쌍대비교 문항 ─────────────────────────────────────────
     for qn, (i, j) in enumerate(CRIT_PAIRS, 1):
-        vals.append(ahp_question(f"crit_{i}_{j}", labels[i], labels[j],
-                                 qn, len(CRIT_PAIRS)))
+
+        # 이전 응답값이 있으면 해당 값을 기본값으로 사용
+        default_val = (
+            saved_vals[qn - 1]
+            if qn - 1 < len(saved_vals)
+            else 1
+        )
+
+        v = ahp_question(
+            f"crit_{i}_{j}",
+            labels[i],
+            labels[j],
+            qn,
+            len(CRIT_PAIRS),
+            default_value=default_val
+        )
+
+        vals.append(v)
         st.divider()
 
+    # ── 현재 응답 저장 ─────────────────────────────────────────
     st.session_state.crit_vals = vals
-    st.session_state.crit_diag = show_block_diag(
-        "평가기준", vals, labels, extra_transitivity=True)
-    st.caption("※ 비교항목이 4개인 블록은 자유도가 낮아 CR이 관대해집니다. "
-               "그래서 전이성 검사를 함께 실시하며, 두 결과를 모두 보고서에 병기합니다.")
 
+    # ── 일관성 점검 ────────────────────────────────────────────
+    st.session_state.crit_diag = show_block_diag(
+        "평가기준",
+        vals,
+        labels,
+        extra_transitivity=True
+    )
+
+    st.caption(
+        "※ 응답의 일관성비율(CR)이 0.10을 초과하거나 "
+        "판단 간 방향이 서로 맞지 않는 경우 재검토가 필요한 문항을 안내합니다."
+    )
+
+    # ── 이전 / 다음 버튼 ───────────────────────────────────────
     c1, c2 = st.columns(2)
+
     with c1:
         if st.button("← 이전", width="stretch"):
             go(1)
+
     with c2:
         nxt = 5 if is_general() else 3
-        label = "최종 검토 →" if is_general() else "다음 : 분야별 중요도 →"
-        if st.button(label, type="primary", width="stretch"):
-            go(nxt)
+        next_label = (
+            "최종 검토 →"
+            if is_general()
+            else "다음 : 전략·핵심과제 중요도 →"
+        )
 
+        if st.button(
+            next_label,
+            type="primary",
+            width="stretch"
+        ):
+            go(nxt)
 
 # ═════════════════════════ 3. 계층 AHP ════════════════════════
 elif st.session_state.page == 3:
