@@ -164,30 +164,68 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
     r = core.block_result(values, labels)
     st.markdown(f"**{title} · 응답 일관성 확인**")
 
-    # ── CR 점검 ───────────────────────────────────────────
+def show_block_diag(title, values, labels, extra_transitivity=False):
+    r = core.block_result(values, labels)
+
+    st.markdown(f"### {title} · 응답 일관성 확인")
+
+    # ── 1. 일관성비율(CR) 확인 ──────────────────────────────
     if r["status"] == "적정":
-        st.success("✓ 비교 응답의 일관성이 적정합니다.")
+        st.markdown(
+            """
+<div class="consistency-card consistency-ok">
+    <div class="consistency-title">
+        ✓ 비교 응답의 일관성이 적정합니다.
+    </div>
+
+    <div class="consistency-sub">
+        중요도의 방향과 정도가 전체적으로 일관되게 응답되었습니다.
+    </div>
+</div>
+""",
+            unsafe_allow_html=True,
+        )
 
     elif r["status"] == "재검토":
-        st.warning(
-            f"일부 비교의 재확인을 권장합니다. "
-            f"(CR = {r['cr']:.3f})"
+        cr_text = (
+            f"{r['cr']:.3f}"
+            if r.get("cr") is not None
+            else "-"
+        )
+
+        st.markdown(
+            f"""
+<div class="consistency-card consistency-warn">
+    <div class="consistency-title">
+        비교 강도 재확인 권장 · CR {cr_text}
+    </div>
+
+    <div class="consistency-sub">
+        아래 비교에서 어느 항목이 더 중요한지뿐 아니라,
+        <b>중요도의 차이(3·5·7·9)</b>가 의도한 판단인지 다시 확인해 주세요.
+    </div>
+</div>
+""",
+            unsafe_allow_html=True,
         )
 
         if r.get("worst"):
-            st.markdown(
-                "**아래 비교를 우선 다시 확인해 주세요.**  \n"
-                "어느 항목이 더 중요한지뿐 아니라, "
-                "중요도의 차이(3·5·7·9)가 적절한지도 확인해 주십시오."
-            )
-
             for i, (a, b) in enumerate(r["worst"], 1):
-                st.write(f"{i}. **{a}** ↔ **{b}**")
+                st.markdown(
+                    f"""
+<div class="consistency-item">
+    {i}. {a} ↔ {b}
+</div>
+""",
+                    unsafe_allow_html=True,
+                )
 
-            st.caption(
-                "※ 현재 응답이 본인의 판단을 정확히 반영한 것이라면 "
-                "CR을 낮추기 위해 억지로 수정할 필요는 없습니다."
-            )
+        st.write("")
+
+        st.caption(
+            "※ 현재 응답이 본인의 판단을 정확히 반영한 것이라면 "
+            "CR을 낮추기 위해 억지로 수정할 필요는 없습니다."
+        )
 
     else:
         st.info(r["message"])
@@ -195,22 +233,38 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
         if r.get("extreme"):
             st.warning(
                 "척도의 가장 큰 차이(9)로 응답한 비교가 있습니다. "
-                "의도한 판단인지 다시 확인해 주십시오."
+                "의도한 판단인지 다시 확인해 주세요."
             )
 
-    # ── 전이성 점검 ────────────────────────────────────────
+    # ── 2. 판단 방향(전이성) 확인 ───────────────────────────
     if extra_transitivity:
-        viol, tot = core.transitivity_violations(values, labels)
-        r["transitivity"] = [list(v) for v in viol]
+        viol, tot = core.transitivity_violations(
+            values,
+            labels,
+        )
+
+        r["transitivity"] = [
+            list(v)
+            for v in viol
+        ]
+
+        st.write("")
 
         if viol:
-            st.warning(
-                f"중요도 판단의 방향에서 서로 맞지 않는 응답이 "
-                f"{len(viol)}건 발견되었습니다."
-            )
-
             st.markdown(
-                "**아래 세 항목의 비교를 다시 확인해 주세요.**"
+                f"""
+<div class="consistency-card consistency-error">
+    <div class="consistency-title">
+        판단 방향 재확인 필요 · {len(viol)}건
+    </div>
+
+    <div class="consistency-sub">
+        항목 간 중요도 판단의 방향이 서로 맞지 않는 응답이 있습니다.
+        아래 비교를 다시 확인해 주세요.
+    </div>
+</div>
+""",
+                unsafe_allow_html=True,
             )
 
             for idx, (a, b, c) in enumerate(viol, 1):
@@ -218,11 +272,15 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
                     f"**{idx}. {a} · {b} · {c}**"
                 )
 
+                st.write("")
+
                 st.write(
-                    f"현재 판단은 **{a} > {b}**, "
+                    f"현재 응답은 **{a} > {b}**, "
                     f"**{b} > {c}**인데, "
                     f"**{a} ≤ {c}**로 나타납니다."
                 )
+
+                st.write("")
 
                 st.caption(
                     f"→ 「{a} ↔ {b}」, "
@@ -230,9 +288,27 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
                     f"「{a} ↔ {c}」 비교를 다시 확인해 주세요."
                 )
 
+                st.write("")
+
+            st.error(
+                "판단 방향이 서로 맞지 않는 응답이 있습니다. "
+                "위에 안내된 비교를 수정해야 다음 단계로 진행할 수 있습니다."
+            )
+
         else:
-            st.success(
-                "✓ 기준 간 중요도 판단의 방향도 일관됩니다."
+            st.markdown(
+                f"""
+<div class="consistency-card consistency-ok">
+    <div class="consistency-title">
+        ✓ 중요도 판단 방향이 일관됩니다.
+    </div>
+
+    <div class="consistency-sub">
+        관련된 {tot}개 판단 관계에서 방향의 모순이 발견되지 않았습니다.
+    </div>
+</div>
+""",
+                unsafe_allow_html=True,
             )
 
     return r
@@ -299,7 +375,7 @@ if st.session_state.page == 1:
             f"5점 척도 {len(tasks_of(field))}개 핵심과제 평가"
         )
 
-    # ── 이전 응답 이어서 하기 ─────────────────────────────
+# ── 이전 응답 이어서 하기 ─────────────────────────────
     with st.expander("이전 응답 이어서 하기"):
         st.markdown(
             "이전에 **응답 임시저장**으로 내려받은 파일을 선택해 주세요. "
@@ -341,29 +417,6 @@ if st.session_state.page == 1:
             except Exception as e:
                 st.error(f"응답 파일을 읽지 못했습니다 : {e}")
 
-    # ── 이전 응답 이어서 하기 ─────────────────────────────
-    if st.button("조사 시작", type="primary", width="stretch"):
-        if not name.strip():
-            st.error("성명을 입력해 주십시오.")
-        elif not org.strip():
-            st.error("소속을 입력해 주십시오.")
-        else:
-            old_field = st.session_state.meta.get("field", "")
-            if old_field and old_field != field:
-                st.session_state.hier = {}
-                st.session_state.ratings = {}
-                for key in list(st.session_state.keys()):
-                    if key.startswith("h_") or key.startswith("feas_") or key.startswith("spill_"):
-                        del st.session_state[key]
-
-            st.session_state.meta = {
-                "name": name.strip(),
-                "org": org.strip(),
-                "field": field,
-                "career": career,
-            }
-            go(2)
-
 # 2. 평가기준 중요도
 elif st.session_state.page == 2:
     st.header(f"평가기준 간 상대적 중요도 ({len(CRIT_PAIRS)}문항)")
@@ -401,30 +454,53 @@ elif st.session_state.page == 2:
             )
         )
         st.divider()
-
+        
+    # ── 현재 응답 저장 ──────────────────────────────────────
     st.session_state.crit_vals = vals
+
+    # ── 응답 일관성 확인 ────────────────────────────────────
     st.session_state.crit_diag = show_block_diag(
-        "평가기준", vals, labels, extra_transitivity=True
-    )
-    trans_viol = st.session_state.crit_diag.get("transitivity", [])
-    st.caption(
-        "※ 일관성비율(CR)이 0.10을 초과하거나 판단 간 방향이 서로 맞지 않는 경우 "
-        "재검토가 필요한 문항을 안내합니다."
+        "평가기준",
+        vals,
+        labels,
+        extra_transitivity=True,
     )
 
+    trans_viol = st.session_state.crit_diag.get(
+        "transitivity",
+        [],
+    )
+
+    st.write("")
+
+    st.caption(
+        "※ 일관성비율(CR)이 0.10을 초과한 경우에는 "
+        "중요도 차이의 재확인을 권장합니다. "
+        "판단 방향이 서로 맞지 않는 경우에는 해당 비교를 수정해야 "
+        "다음 단계로 진행할 수 있습니다."
+    )
+
+    st.write("")
+
+    # ── 이전 / 다음 버튼 ────────────────────────────────────
     c1, c2 = st.columns(2)
+
     with c1:
-        if st.button("← 이전", width="stretch"):
+        if st.button(
+            "← 이전",
+            width="stretch",
+        ):
             go(1)
+
     with c2:
         nxt = 5 if is_general() else 3
+
         next_label = (
             "최종 검토 →"
             if is_general()
             else "다음 : 전략·핵심과제 중요도 →"
         )
 
-    # 전이성 위반이 있으면 다음 단계 이동 금지
         if trans_viol:
             st.button(
                 next_label,
@@ -432,10 +508,7 @@ elif st.session_state.page == 2:
                 width="stretch",
                 disabled=True,
             )
-            st.error(
-            "중요도 판단 방향이 서로 맞지 않는 응답이 있습니다. "
-            "위에 안내된 비교문항을 다시 확인한 후 다음 단계로 진행해 주세요."
-            )
+
         else:
             if st.button(
                 next_label,
