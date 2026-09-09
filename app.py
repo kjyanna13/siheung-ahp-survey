@@ -162,40 +162,82 @@ def ahp_question(key, left, right, qno, qtot, default_value=1):
 
 def show_block_diag(title, values, labels, extra_transitivity=False):
     r = core.block_result(values, labels)
-    st.markdown(f"**{title} · 일관성 점검**")
+    st.markdown(f"**{title} · 응답 일관성 확인**")
 
+    # ── CR 점검 ───────────────────────────────────────────
     if r["status"] == "적정":
-        st.success(r["message"])
+        st.success("✓ 비교 응답의 일관성이 적정합니다.")
+
     elif r["status"] == "재검토":
-        st.warning(r["message"])
+        st.warning(
+            f"일부 비교의 재확인을 권장합니다. "
+            f"(CR = {r['cr']:.3f})"
+        )
+
         if r.get("worst"):
-            st.caption(
-                "전체 판단구조와 어긋나는 정도가 큰 비교입니다. "
-                "틀렸다는 뜻은 아니며, 먼저 다시 볼 문항입니다."
+            st.markdown(
+                "**아래 비교를 우선 다시 확인해 주세요.**  \n"
+                "어느 항목이 더 중요한지뿐 아니라, "
+                "중요도의 차이(3·5·7·9)가 적절한지도 확인해 주십시오."
             )
+
             for i, (a, b) in enumerate(r["worst"], 1):
-                st.write(f"{i}. {a} ↔ {b}")
+                st.write(f"{i}. **{a}** ↔ **{b}**")
+
+            st.caption(
+                "※ 현재 응답이 본인의 판단을 정확히 반영한 것이라면 "
+                "CR을 낮추기 위해 억지로 수정할 필요는 없습니다."
+            )
+
     else:
         st.info(r["message"])
+
         if r.get("extreme"):
             st.warning(
-                "두 항목 모두 척도 양극단(9)으로 응답하셨습니다. "
-                "의도한 판단인지 확인해 주십시오."
+                "척도의 가장 큰 차이(9)로 응답한 비교가 있습니다. "
+                "의도한 판단인지 다시 확인해 주십시오."
             )
 
+    # ── 전이성 점검 ────────────────────────────────────────
     if extra_transitivity:
         viol, tot = core.transitivity_violations(values, labels)
         r["transitivity"] = [list(v) for v in viol]
+
         if viol:
-            st.warning(f"전이성 검사 : 삼각형 {tot}개 중 {len(viol)}건 위반")
-            for a, b, c in viol:
-                st.write(
-                    f"· **{a}** > **{b}**, **{b}** > **{c}** 인데 "
-                    f"**{a}** ≤ **{c}** 로 응답되었습니다."
+            st.warning(
+                f"중요도 판단의 방향에서 서로 맞지 않는 응답이 "
+                f"{len(viol)}건 발견되었습니다."
+            )
+
+            st.markdown(
+                "**아래 세 항목의 비교를 다시 확인해 주세요.**"
+            )
+
+            for idx, (a, b, c) in enumerate(viol, 1):
+                st.markdown(
+                    f"**{idx}. {a} · {b} · {c}**"
                 )
+
+                st.write(
+                    f"현재 판단은 **{a} > {b}**, "
+                    f"**{b} > {c}**인데, "
+                    f"**{a} ≤ {c}**로 나타납니다."
+                )
+
+                st.caption(
+                    f"→ 「{a} ↔ {b}」, "
+                    f"「{b} ↔ {c}」, "
+                    f"「{a} ↔ {c}」 비교를 다시 확인해 주세요."
+                )
+
         else:
-            st.success(f"전이성 검사 : 삼각형 {tot}개 모두 통과")
+            st.success(
+                "✓ 기준 간 중요도 판단의 방향도 일관됩니다."
+            )
+
     return r
+
+
 
 st.title("시흥시 지역균형발전 기본계획")
 st.caption(
