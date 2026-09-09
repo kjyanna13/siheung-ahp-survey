@@ -25,37 +25,183 @@ st.set_page_config(
 
 CRIT_PAIRS = pairs(len(CRIT))
 
-st.markdown("""
+st.markdown(
+    """
 <style>
-html, body, 
-.ahp-card, .ahp-qno, .ahp-pair, .ahp-ends, .ahp-pick, .ahp-score-grid {
-  font-family: "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo",
-               "Noto Sans KR", "Nanum Gothic", sans-serif;
+
+/* ─────────────────────────────────────────────
+   전체 화면
+───────────────────────────────────────────── */
+
+.block-container {
+    max-width: 960px;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
 }
-.block-container {max-width:960px; padding-top:2rem; padding-bottom:4rem;}
+
+
+/* ─────────────────────────────────────────────
+   AHP 문항 카드
+───────────────────────────────────────────── */
+
 .ahp-card {
-  border:1px solid #e5e7eb; border-left:4px solid #1b365d;
-  border-radius:10px; padding:.85rem 1.05rem .7rem;
-  margin:1.1rem 0 .5rem; background:#fafbfc;
+    border-left: 4px solid #1b365d;
+    padding: 0.2rem 0 0.2rem 0.9rem;
+    margin-bottom: 0.7rem;
 }
-.ahp-qno {font-size:.82rem; font-weight:700; color:#6b7280;}
-.ahp-pair {font-size:1.02rem; font-weight:700; line-height:1.6; color:#111827;}
-.ahp-score-grid {
-  display:grid; grid-template-columns:repeat(9,1fr); text-align:center;
-  font-size:.84rem; font-weight:700; color:#374151;
-  padding:0; margin:.45rem 0 -.5rem;
+
+
+/* 문항 번호 */
+
+.ahp-qno {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 0.35rem;
 }
-.ahp-sep {color:#9ca3af; font-weight:400; padding:0 .7rem;}
+
+
+/* 비교하는 두 항목 */
+
+.ahp-pair {
+    font-size: 1.02rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: #111827;
+}
+
+
+/* 두 항목 사이 구분선 */
+
+.ahp-sep {
+    color: #9ca3af;
+    font-weight: 400;
+    padding: 0 0.7rem;
+}
+
+
+/* ─────────────────────────────────────────────
+   슬라이더 좌우 항목
+───────────────────────────────────────────── */
+
 .ahp-ends {
-  display:flex; justify-content:space-between; font-size:.9rem;
-  font-weight:700; color:#1b365d; margin-bottom:.15rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+
+    margin-top: 0.4rem;
+    margin-bottom: 0.25rem;
 }
-.ahp-pick {font-size:.95rem; color:#1f2937; margin-top:.55rem; padding-left:.1rem;}
-[data-testid="stSliderThumbValue"] {display:none !important;}
-[data-testid="stSliderTickBar"] {display:none !important;}
-[data-testid="stSlider"] {padding-top:.1rem;}
+
+
+/* ─────────────────────────────────────────────
+   9 · 7 · 5 · 3 · 1 · 3 · 5 · 7 · 9
+───────────────────────────────────────────── */
+
+.ahp-score-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+
+    text-align: center;
+
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #4b5563;
+
+    margin-top: 0.35rem;
+    margin-bottom: -0.4rem;
+}
+
+
+/* ─────────────────────────────────────────────
+   Streamlit 슬라이더
+───────────────────────────────────────────── */
+
+[data-testid="stSliderThumbValue"] {
+    display: none !important;
+}
+
+[data-testid="stSliderTickBar"] {
+    display: none !important;
+}
+
+[data-testid="stSlider"] {
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+}
+
+
+/* ─────────────────────────────────────────────
+   선택 결과
+───────────────────────────────────────────── */
+
+.ahp-pick {
+    font-size: 0.9rem;
+    font-weight: 400;
+
+    color: #8a9199;
+
+    line-height: 1.6;
+
+    margin-top: 0.75rem;
+    margin-bottom: 0.15rem;
+}
+
+
+/* 선택 결과의 굵은 글씨도 회색 */
+
+.ahp-pick b {
+    color: #6b7280;
+    font-weight: 600;
+}
+
+
+/* ─────────────────────────────────────────────
+   Streamlit 테두리 컨테이너
+   한 문항 전체를 하나의 블록으로 표시
+───────────────────────────────────────────── */
+
+[data-testid="stVerticalBlockBorderWrapper"] {
+    border-radius: 12px;
+}
+
+
+/* ─────────────────────────────────────────────
+   모바일 화면
+───────────────────────────────────────────── */
+
+@media (max-width: 700px) {
+
+    .block-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .ahp-pair {
+        font-size: 0.95rem;
+    }
+
+    .ahp-ends {
+        font-size: 0.8rem;
+    }
+
+    .ahp-score-grid {
+        font-size: 0.76rem;
+    }
+
+    .ahp-pick {
+        font-size: 0.84rem;
+    }
+}
+
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 DEFAULTS = {
     "page": 1,
@@ -119,29 +265,33 @@ def _restore_widget_states():
         st.session_state["op_constraint"] = opinions.get("constraint", "")
         st.session_state["op_method"] = opinions.get("method", "")
 
-def ahp_question(key, left, right, qno, qtot, default_value=1):
+def ahp_question(
+    key,
+    left,
+    right,
+    qno,
+    qtot,
+    default_value=1,
+):
 
     with st.container(border=True):
 
-        # ── 문항 번호 ──────────────────────────────────────
+        # ── 문항 번호 + 비교 항목 ──────────────────────────
         st.markdown(
+            f'<div class="ahp-card">'
             f'<div class="ahp-qno">'
             f'문항 {qno} / {qtot}'
-            f'</div>',
-            unsafe_allow_html=True,
-        )
-
-        # ── 비교 항목 ──────────────────────────────────────
-        st.markdown(
+            f'</div>'
             f'<div class="ahp-pair">'
             f'{left}'
-            f'<span class="ahp-sep"> — </span>'
+            f'<span class="ahp-sep">—</span>'
             f'{right}'
+            f'</div>'
             f'</div>',
             unsafe_allow_html=True,
         )
 
-        # ── 좌우 기준 ──────────────────────────────────────
+        # ── 좌우 비교 기준 ─────────────────────────────────
         st.markdown(
             f'<div class="ahp-ends">'
             f'<span>← {left}</span>'
@@ -166,7 +316,7 @@ def ahp_question(key, left, right, qno, qtot, default_value=1):
             unsafe_allow_html=True,
         )
 
-        # ── 슬라이더 ────────────────────────────────────────
+        # ── 슬라이더 선택지 ────────────────────────────────
         labels = [
             _label(v, left, right)
             for v in SCALE
@@ -495,7 +645,7 @@ elif st.session_state.page == 2:
                 default_value=default_val,
             )
         )
-        st.divider()
+
         
     # ── 현재 응답 저장 ──────────────────────────────────────
     st.session_state.crit_vals = vals
@@ -610,7 +760,7 @@ elif st.session_state.page == 3:
             "values": vals,
             "diag": diag,
         }
-        st.divider()
+
 
     st.session_state.hier = hier
 
@@ -821,8 +971,8 @@ elif st.session_state.page == 5:
     }
     jtxt = json.dumps(payload, ensure_ascii=False, indent=2)
 
-    st.divider()
 
+    
     if st.session_state.submitted:
         st.success(st.session_state.submit_msg)
         st.caption(
@@ -885,7 +1035,7 @@ with st.sidebar:
             f"{done}/{len(tasks_of(rtype()))}과제"
         )
 
-    st.divider()
+
 
     temp_hier = {
         c: {k:v for k,v in b.items() if k != "diag"}
@@ -914,8 +1064,8 @@ with st.sidebar:
         "다음 접속 시 첫 화면의 '이전 응답 이어서 하기'에서 불러올 수 있습니다."
     )
 
-    st.divider()
+
     st.caption(
-        "문의 : 시흥시정연구원 ○○○ 연구원\n\n"
-        "031-○○○-○○○○"
+        "문의 : 시흥시정연구원 김주영 연구위원\n\n"
+        "031-317-0141"
     )
