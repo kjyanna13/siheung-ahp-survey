@@ -177,7 +177,7 @@ if st.session_state.page == 1:
 
     c1, c2 = st.columns(2)
     with c1:
-        name = st.text_input("성명 또는 전문가 ID *",
+        name = st.text_input("성명 *",
                              value=st.session_state.meta.get("name", ""))
         org = st.text_input("소속", value=st.session_state.meta.get("org", ""))
     with c2:
@@ -190,8 +190,6 @@ if st.session_state.page == 1:
         pc = st.session_state.meta.get("career", careers[0])
         career = st.selectbox("관련 분야 경력", careers,
                               index=careers.index(pc) if pc in careers else 0)
-    siheung = st.radio("시흥시 관련 업무·연구 경험", ["있음", "없음"], horizontal=True)
-
     if field in GENERAL_TYPES:
         st.info(f"**{field}** 은 조사계획에 따라 **Ⅱ부(평가기준)만** 응답하십니다. "
                 "Ⅲ·Ⅳ부는 분야 전문가가 소관 분야에 대해서만 응답합니다.")
@@ -199,29 +197,17 @@ if st.session_state.page == 1:
         nb, nq = block_stats(field)
         flat = " · 전략층을 두지 않는 평면화 분야" if field in FLAT else ""
         st.info(f"**{field}** — 분야 목표 「{FIELD_GOAL[field]}」\n\n"
-                f"Ⅲ부 {nb}블록 {nq}문항{flat} · Ⅳ부 {len(tasks_of(field))}개 과제 평정")
-
-    with st.expander("진행하던 응답 이어서 하기 (JSON 불러오기)"):
-        up = st.file_uploader("이전에 내려받은 진행상황 파일", type="json",
-                              label_visibility="collapsed")
-        if up is not None and st.button("불러오기", width="stretch"):
-            try:
-                data = json.loads(up.read().decode("utf-8"))
-                for k in ("meta", "crit_vals", "hier", "ratings",
-                          "opinions", "response_id"):
-                    if k in data:
-                        st.session_state[k] = data[k]
-                st.success("불러왔습니다. 아래 버튼으로 이어서 진행하십시오.")
-            except Exception as e:
-                st.error(f"파일을 읽지 못했습니다 : {e}")
+                f"쌍대비교 {nb}블록 {nq}문항{flat} · 5점 척도 {len(tasks_of(field))}개 과제 평정")
 
     if st.button("조사 시작", type="primary", width="stretch"):
         if not name.strip():
-            st.error("성명 또는 전문가 ID를 입력해 주십시오.")
+            st.error("성명을 입력해 주십시오.")
         else:
             st.session_state.meta = {
-                "name": name.strip(), "org": org.strip(), "field": field,
-                "career": career, "siheung": siheung,
+                "name": name.strip(), 
+                "org": org.strip(), 
+                "field": field,
+                "career": career,
             }
             go(2)
 
