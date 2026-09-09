@@ -179,7 +179,7 @@ if st.session_state.page == 1:
     with c1:
         name = st.text_input("성명 *",
                              value=st.session_state.meta.get("name", ""))
-        org = st.text_input("소속", value=st.session_state.meta.get("org", ""))
+        org = st.text_input("소속 *", value=st.session_state.meta.get("org", ""))
     with c2:
         prev = st.session_state.meta.get("field", RESPONDENT_TYPES[0])
         field = st.selectbox(
@@ -202,6 +202,8 @@ if st.session_state.page == 1:
     if st.button("조사 시작", type="primary", width="stretch"):
         if not name.strip():
             st.error("성명을 입력해 주십시오.")
+        elif not org.strip():
+            st.error("소속을 입력해 주십시오.")
         else:
             st.session_state.meta = {
                 "name": name.strip(), 
