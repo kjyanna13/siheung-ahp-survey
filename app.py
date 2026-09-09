@@ -257,32 +257,49 @@ if st.session_state.page == 1:
             f"5점 척도 {len(tasks_of(field))}개 핵심과제 평가"
         )
 
-   with st.expander("이전 응답 이어서 하기"):
-    st.markdown(
-        "이전에 **응답 임시저장**으로 내려받은 파일을 선택해 주세요. "
-        "보통 컴퓨터의 **다운로드 폴더**에 저장되어 있습니다."
-    )
+    # ── 이전 응답 이어서 하기 ─────────────────────────────
+    with st.expander("이전 응답 이어서 하기"):
+        st.markdown(
+            "이전에 **응답 임시저장**으로 내려받은 파일을 선택해 주세요. "
+            "임시저장 파일은 보통 컴퓨터의 **다운로드 폴더**에 있습니다."
+        )
 
-    up = st.file_uploader(
-        "다운로드 폴더에서 임시저장 파일 선택",
-        type=["json"],
-        accept_multiple_files=False,
-    )
-        if up is not None and st.button("이전 응답 불러오기", width="stretch"):
+        up = st.file_uploader(
+            "다운로드 폴더에서 임시저장 파일 선택",
+            type=["json"],
+            accept_multiple_files=False,
+        )
+
+        if up is not None and st.button(
+            "이전 응답 불러오기",
+            width="stretch",
+        ):
             try:
                 data = json.loads(up.read().decode("utf-8"))
-                for k in ("meta", "crit_vals", "hier", "ratings", "opinions", "response_id"):
+
+                for k in (
+                    "meta",
+                    "crit_vals",
+                    "hier",
+                    "ratings",
+                    "opinions",
+                    "response_id",
+                ):
                     if k in data:
                         st.session_state[k] = data[k]
+
                 _restore_widget_states()
+
                 st.success(
                     "이전 응답을 불러왔습니다. "
                     "아래 '조사 시작' 버튼을 눌러 이어서 진행해 주세요."
                 )
                 st.rerun()
+
             except Exception as e:
                 st.error(f"응답 파일을 읽지 못했습니다 : {e}")
 
+    # ── 이전 응답 이어서 하기 ─────────────────────────────
     if st.button("조사 시작", type="primary", width="stretch"):
         if not name.strip():
             st.error("성명을 입력해 주십시오.")
