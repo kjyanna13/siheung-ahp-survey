@@ -1,0 +1,6 @@
+# Streamlit 1.36부터 width="stretch" 를 지원합니다.
+# use_container_width 는 폐기 예정이라 쓰지 않습니다.
+streamlit>=1.36
+numpy>=1.26
+gspread>=6.0
+google-auth>=2.29
