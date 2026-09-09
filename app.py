@@ -374,18 +374,19 @@ def ahp_question(
 
 def show_block_diag(title, values, labels, extra_transitivity=False):
 
-    # 비교항목이 2개인 경우 일관성 검사를 하지 않음
+    # 비교항목이 2개인 경우 일관성 검사를 표시하지 않음
     if len(labels) <= 2:
         return {
+            "n": len(labels),
             "status": "해당없음",
             "cr": None,
+            "weights": None,
             "worst": [],
             "extreme": False,
             "transitivity": [],
         }
 
     r = core.block_result(values, labels)
-
 
     # ── 1. 일관성비율(CR) 확인 ──────────────────────────────
     if r["status"] == "적정":
@@ -893,11 +894,12 @@ elif st.session_state.page == 5:
 
     for code, b in st.session_state.hier.items():
         d = b["diag"]
+
         rows.append({
             "평가영역": b["title"],
-            "항목수": d["n"],
-            "CR": "-" if d["cr"] is None else f"{d['cr']:.3f}",
-            "판정": d["status"],
+            "항목수": d.get("n", len(b["items"])),
+            "CR": "-" if d.get("cr") is None else f"{d['cr']:.3f}",
+            "판정": d.get("status", "해당없음"),
         })
 
     st.dataframe(rows, width="stretch", hide_index=True)
