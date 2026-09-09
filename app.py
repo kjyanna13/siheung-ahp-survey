@@ -417,6 +417,45 @@ if st.session_state.page == 1:
             except Exception as e:
                 st.error(f"응답 파일을 읽지 못했습니다 : {e}")
 
+    # ── 조사 시작 ──────────────────────────────────────────
+    if st.button(
+        "조사 시작",
+        type="primary",
+        width="stretch",
+    ):
+        if not name.strip():
+            st.error("성명을 입력해 주십시오.")
+
+        elif not org.strip():
+            st.error("소속을 입력해 주십시오.")
+
+        else:
+            old_field = st.session_state.meta.get("field", "")
+
+            # 소관 분야가 변경된 경우 이전 분야 응답 초기화
+            if old_field and old_field != field:
+                st.session_state.hier = {}
+                st.session_state.ratings = {}
+
+                for key in list(st.session_state.keys()):
+                    if (
+                        key.startswith("h_")
+                        or key.startswith("feas_")
+                        or key.startswith("spill_")
+                    ):
+                        del st.session_state[key]
+
+            st.session_state.meta = {
+                "name": name.strip(),
+                "org": org.strip(),
+                "field": field,
+                "career": career,
+            }
+
+            go(2)
+
+
+
 # 2. 평가기준 중요도
 elif st.session_state.page == 2:
     st.header(f"평가기준 간 상대적 중요도 ({len(CRIT_PAIRS)}문항)")
