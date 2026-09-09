@@ -458,14 +458,14 @@ with st.sidebar:
     st.caption(f"접수번호 {st.session_state.response_id}")
     if rtype():
         st.write(f"**{rtype()}**")
-    st.write(f"Ⅱ부 {len(st.session_state.crit_vals)}/{len(CRIT_PAIRS)}문항")
+    st.write(f"평가기준 중요도 {len(st.session_state.crit_vals)}/{len(CRIT_PAIRS)}문항")
     if not is_general() and rtype():
         nb, nq = block_stats(rtype())
         ans = sum(len(b["values"]) for b in st.session_state.hier.values())
-        st.write(f"Ⅲ부 {ans}/{nq}문항")
+        st.write(f"전략.핵심과제 중요도 {ans}/{nq}문항")
         done = sum(1 for v in st.session_state.ratings.values()
                    if v.get("feas") and v.get("spill"))
-        st.write(f"Ⅳ부 {done}/{len(tasks_of(rtype()))}과제")
+        st.write(f"실행.파급효과 평가 {done}/{len(tasks_of(rtype()))}과제")
     st.divider()
     st.download_button(
         "진행 상황 내려받기",
@@ -483,4 +483,4 @@ with st.sidebar:
     st.caption("중간에 그만두셔야 하면 내려받아 두셨다가, "
                "첫 화면에서 불러오기로 이어서 하실 수 있습니다.")
     st.divider()
-    st.caption("문의 : 시흥시정연구원 ○○○ 연구원\n\n031-○○○-○○○○")
+    st.caption("문의 : 시흥시정연구원 김주영 연구위원    연구원\n\n031-317-0141")
