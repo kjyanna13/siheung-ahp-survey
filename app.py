@@ -120,44 +120,106 @@ def _restore_widget_states():
         st.session_state["op_method"] = opinions.get("method", "")
 
 def ahp_question(key, left, right, qno, qtot, default_value=1):
-    st.markdown(
-        f'<div class="ahp-card"><div class="ahp-qno">문항 {qno} / {qtot}</div>'
-        f'<div class="ahp-pair">{left}<span class="ahp-sep">—</span>{right}</div></div>',
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        f'<div class="ahp-ends"><span>← {left}</span><span>{right} →</span></div>'
-        '<div class="ahp-score-grid">'
-        '<span>9</span><span>7</span><span>5</span><span>3</span>'
-        '<span>1</span><span>3</span><span>5</span><span>7</span><span>9</span>'
-        '</div>',
-        unsafe_allow_html=True,
-    )
 
-    labels = [_label(v, left, right) for v in SCALE]
-    default_label = _label(default_value, left, right)
+    with st.container(border=True):
 
-    if key not in st.session_state:
-        st.session_state[key] = default_label
-
-    picked = st.select_slider(
-        " ", options=labels, key=key, label_visibility="collapsed"
-    )
-    v = SCALE[labels.index(picked)]
-
-    if v == 1:
-        msg = f"<b>{left}</b>와 <b>{right}</b>가 <b>동등하게 중요</b> (1)"
-    elif v > 0:
-        msg = (
-            f"<b>{left}</b>가 <b>{right}</b>보다 <b>더 중요</b> "
-            f"— {v}점 · {SCALE_HELP[abs(v)]}"
+        # ── 문항 번호 ──────────────────────────────────────
+        st.markdown(
+            f'<div class="ahp-qno">'
+            f'문항 {qno} / {qtot}'
+            f'</div>',
+            unsafe_allow_html=True,
         )
-    else:
-        msg = (
-            f"<b>{right}</b>가 <b>{left}</b>보다 <b>더 중요</b> "
-            f"— {abs(v)}점 · {SCALE_HELP[abs(v)]}"
+
+        # ── 비교 항목 ──────────────────────────────────────
+        st.markdown(
+            f'<div class="ahp-pair">'
+            f'{left}'
+            f'<span class="ahp-sep"> — </span>'
+            f'{right}'
+            f'</div>',
+            unsafe_allow_html=True,
         )
-    st.markdown(f'<div class="ahp-pick">↳ {msg}</div>', unsafe_allow_html=True)
+
+        # ── 좌우 기준 ──────────────────────────────────────
+        st.markdown(
+            f'<div class="ahp-ends">'
+            f'<span>← {left}</span>'
+            f'<span>{right} →</span>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+
+        # ── 척도 숫자 ──────────────────────────────────────
+        st.markdown(
+            '<div class="ahp-score-grid">'
+            '<span>9</span>'
+            '<span>7</span>'
+            '<span>5</span>'
+            '<span>3</span>'
+            '<span>1</span>'
+            '<span>3</span>'
+            '<span>5</span>'
+            '<span>7</span>'
+            '<span>9</span>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+
+        # ── 슬라이더 ────────────────────────────────────────
+        labels = [
+            _label(v, left, right)
+            for v in SCALE
+        ]
+
+        default_label = _label(
+            default_value,
+            left,
+            right,
+        )
+
+        if key not in st.session_state:
+            st.session_state[key] = default_label
+
+        picked = st.select_slider(
+            " ",
+            options=labels,
+            key=key,
+            label_visibility="collapsed",
+        )
+
+        v = SCALE[
+            labels.index(picked)
+        ]
+
+        # ── 선택 결과 ──────────────────────────────────────
+        if v == 1:
+            msg = (
+                f"{left}와 {right}가 "
+                f"<b>동등하게 중요</b> · 1점"
+            )
+
+        elif v > 0:
+            msg = (
+                f"{left}가 {right}보다 "
+                f"<b>더 중요</b> · "
+                f"{v}점 · {SCALE_HELP[abs(v)]}"
+            )
+
+        else:
+            msg = (
+                f"{right}가 {left}보다 "
+                f"<b>더 중요</b> · "
+                f"{abs(v)}점 · {SCALE_HELP[abs(v)]}"
+            )
+
+        st.markdown(
+            f'<div class="ahp-pick">'
+            f'↳ {msg}'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+
     return v
 
 def show_block_diag(title, values, labels, extra_transitivity=False):
