@@ -406,6 +406,7 @@ elif st.session_state.page == 2:
     st.session_state.crit_diag = show_block_diag(
         "평가기준", vals, labels, extra_transitivity=True
     )
+    trans_viol = st.session_state.crit_diag.get("transitivity", [])
     st.caption(
         "※ 일관성비율(CR)이 0.10을 초과하거나 판단 간 방향이 서로 맞지 않는 경우 "
         "재검토가 필요한 문항을 안내합니다."
@@ -417,9 +418,31 @@ elif st.session_state.page == 2:
             go(1)
     with c2:
         nxt = 5 if is_general() else 3
-        next_label = "최종 검토 →" if is_general() else "다음 : 전략·핵심과제 중요도 →"
-        if st.button(next_label, type="primary", width="stretch"):
-            go(nxt)
+        next_label = (
+            "최종 검토 →"
+            if is_general()
+            else "다음 : 전략·핵심과제 중요도 →"
+        )
+
+    # 전이성 위반이 있으면 다음 단계 이동 금지
+        if trans_viol:
+            st.button(
+                next_label,
+                type="primary",
+                width="stretch",
+                disabled=True,
+            )
+            st.error(
+            "중요도 판단 방향이 서로 맞지 않는 응답이 있습니다. "
+            "위에 안내된 비교문항을 다시 확인한 후 다음 단계로 진행해 주세요."
+            )
+        else:
+            if st.button(
+                next_label,
+                type="primary",
+                width="stretch",
+            ):
+                go(nxt)
 
 # 3. 전략·핵심과제 중요도
 elif st.session_state.page == 3:
