@@ -373,6 +373,17 @@ def ahp_question(
     return v
 
 def show_block_diag(title, values, labels, extra_transitivity=False):
+
+    # 비교항목이 2개인 경우 일관성 검사를 하지 않음
+    if len(labels) <= 2:
+        return {
+            "status": "해당없음",
+            "cr": None,
+            "worst": [],
+            "extreme": False,
+            "transitivity": [],
+        }
+
     r = core.block_result(values, labels)
 
 
@@ -415,7 +426,7 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
         )
 
     # ── 2. 판단 방향(전이성) 확인 ───────────────────────────
-    if extra_transitivity:
+    if extra_transitivity and len(labels) >= 3:
         viol, tot = core.transitivity_violations(
             values,
             labels,
@@ -455,12 +466,7 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
 
                 st.write("")
 
-            st.warning(
-                "🔒 판단 방향의 모순을 수정하면 "
-                "다음 단계로 진행할 수 있습니다."
-            )
-
-        else:
+         else:
             st.success(
                 "✓ 중요도 판단 방향이 일관됩니다."
             )
