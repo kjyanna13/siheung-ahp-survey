@@ -27,7 +27,7 @@ CRIT_PAIRS = pairs(len(CRIT))
 
 st.markdown("""
 <style>
-html, body, [class*="st-"], [class*="css"],
+html, body, 
 .ahp-card, .ahp-qno, .ahp-pair, .ahp-ends, .ahp-pick, .ahp-score-grid {
   font-family: "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo",
                "Noto Sans KR", "Nanum Gothic", sans-serif;
