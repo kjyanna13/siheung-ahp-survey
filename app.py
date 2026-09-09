@@ -162,28 +162,13 @@ def ahp_question(key, left, right, qno, qtot, default_value=1):
 
 def show_block_diag(title, values, labels, extra_transitivity=False):
     r = core.block_result(values, labels)
-    st.markdown(f"**{title} · 응답 일관성 확인**")
-
-def show_block_diag(title, values, labels, extra_transitivity=False):
-    r = core.block_result(values, labels)
 
     st.markdown(f"### {title} · 응답 일관성 확인")
 
     # ── 1. 일관성비율(CR) 확인 ──────────────────────────────
     if r["status"] == "적정":
-        st.markdown(
-            """
-<div class="consistency-card consistency-ok">
-    <div class="consistency-title">
-        ✓ 비교 응답의 일관성이 적정합니다.
-    </div>
-
-    <div class="consistency-sub">
-        중요도의 방향과 정도가 전체적으로 일관되게 응답되었습니다.
-    </div>
-</div>
-""",
-            unsafe_allow_html=True,
+        st.success(
+            "✓ 비교 응답의 일관성이 적정합니다."
         )
 
     elif r["status"] == "재검토":
@@ -193,34 +178,19 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
             else "-"
         )
 
-        st.markdown(
-            f"""
-<div class="consistency-card consistency-warn">
-    <div class="consistency-title">
-        비교 강도 재확인 권장 · CR {cr_text}
-    </div>
-
-    <div class="consistency-sub">
-        아래 비교에서 어느 항목이 더 중요한지뿐 아니라,
-        <b>중요도의 차이(3·5·7·9)</b>가 의도한 판단인지 다시 확인해 주세요.
-    </div>
-</div>
-""",
-            unsafe_allow_html=True,
+        st.warning(
+            f"**비교 강도 재확인 권장 | CR {cr_text}**\n\n"
+            "아래 비교에서 중요도의 차이(3·5·7·9)가 "
+            "의도한 판단인지 확인해 주세요."
         )
 
         if r.get("worst"):
-            for i, (a, b) in enumerate(r["worst"], 1):
-                st.markdown(
-                    f"""
-<div class="consistency-item">
-    {i}. {a} ↔ {b}
-</div>
-""",
-                    unsafe_allow_html=True,
-                )
+            st.markdown("**우선 확인할 비교**")
 
-        st.write("")
+            for i, (a, b) in enumerate(r["worst"], 1):
+                st.write(
+                    f"{i}. {a} ↔ {b}"
+                )
 
         st.caption(
             "※ 현재 응답이 본인의 판단을 정확히 반영한 것이라면 "
@@ -228,13 +198,9 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
         )
 
     else:
-        st.info(r["message"])
-
-        if r.get("extreme"):
-            st.warning(
-                "척도의 가장 큰 차이(9)로 응답한 비교가 있습니다. "
-                "의도한 판단인지 다시 확인해 주세요."
-            )
+        st.info(
+            r["message"]
+        )
 
     # ── 2. 판단 방향(전이성) 확인 ───────────────────────────
     if extra_transitivity:
@@ -251,68 +217,43 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
         st.write("")
 
         if viol:
-            st.markdown(
-                f"""
-<div class="consistency-card consistency-error">
-    <div class="consistency-title">
-        판단 방향 재확인 필요 · {len(viol)}건
-    </div>
-
-    <div class="consistency-sub">
-        항목 간 중요도 판단의 방향이 서로 맞지 않는 응답이 있습니다.
-        아래 비교를 다시 확인해 주세요.
-    </div>
-</div>
-""",
-                unsafe_allow_html=True,
+            st.error(
+                f"**판단 방향 재확인 필요 | {len(viol)}건**\n\n"
+                "항목 간 중요도 판단의 방향이 서로 맞지 않습니다. "
+                "아래 비교를 다시 확인해 주세요."
             )
 
             for idx, (a, b, c) in enumerate(viol, 1):
+
                 st.markdown(
-                    f"**{idx}. {a} · {b} · {c}**"
+                    f"#### {idx}. {a} · {b} · {c}"
                 )
 
-                st.write("")
-
-                st.write(
-                    f"현재 응답은 **{a} > {b}**, "
-                    f"**{b} > {c}**인데, "
-                    f"**{a} ≤ {c}**로 나타납니다."
+                st.markdown(
+                    f"- **{a} > {b}**\n"
+                    f"- **{b} > {c}**\n"
+                    f"- 그런데 **{a} ≤ {c}**"
                 )
 
-                st.write("")
-
-                st.caption(
+                st.info(
                     f"→ 「{a} ↔ {b}」, "
                     f"「{b} ↔ {c}」, "
-                    f"「{a} ↔ {c}」 비교를 다시 확인해 주세요."
+                    f"「{a} ↔ {c}」를 다시 확인해 주세요."
                 )
 
                 st.write("")
 
-            st.error(
-                "판단 방향이 서로 맞지 않는 응답이 있습니다. "
-                "위에 안내된 비교를 수정해야 다음 단계로 진행할 수 있습니다."
+            st.warning(
+                "🔒 판단 방향의 모순을 수정하면 "
+                "다음 단계로 진행할 수 있습니다."
             )
 
         else:
-            st.markdown(
-                f"""
-<div class="consistency-card consistency-ok">
-    <div class="consistency-title">
-        ✓ 중요도 판단 방향이 일관됩니다.
-    </div>
-
-    <div class="consistency-sub">
-        관련된 {tot}개 판단 관계에서 방향의 모순이 발견되지 않았습니다.
-    </div>
-</div>
-""",
-                unsafe_allow_html=True,
+            st.success(
+                "✓ 중요도 판단 방향이 일관됩니다."
             )
 
     return r
-
 
 
 st.title("시흥시 지역균형발전 기본계획")
