@@ -964,7 +964,7 @@ elif st.session_state.page == 5:
             c: {
                 "items":b["items"],
                 "values":b["values"],
-                "weights":b["diag"]["weights"],
+                "weights": b["diag"].get("weights"),
             }
             for c,b in st.session_state.hier.items()
         },
