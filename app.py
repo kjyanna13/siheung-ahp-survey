@@ -163,7 +163,6 @@ def ahp_question(key, left, right, qno, qtot, default_value=1):
 def show_block_diag(title, values, labels, extra_transitivity=False):
     r = core.block_result(values, labels)
 
-    st.markdown(f"### {title} · 응답 일관성 확인")
 
     # ── 1. 일관성비율(CR) 확인 ──────────────────────────────
     if r["status"] == "적정":
@@ -179,11 +178,12 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
         )
 
         st.warning(
+            f"### {title} · 응답 일관성 확인\n\n"
             f"**비교 강도 재확인 권장 | CR {cr_text}**\n\n"
             "아래 비교에서 중요도의 차이(3·5·7·9)가 "
             "의도한 판단인지 확인해 주세요."
         )
-
+        
         if r.get("worst"):
             st.markdown("**우선 확인할 비교**")
 
