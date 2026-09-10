@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """시흥시 지역균형발전 기본계획 — 전문가 AHP 조사 웹폼
 
-6개 분야 · 16개 전략 · 42개 핵심과제
+6개 분야 · 17개 전략 · 46개 핵심과제 (2026-09-10 문화·여가 개정 반영)
 평가기준 K1~K4
+
+분야·전략·과제 수는 hierdata/taskdata에서 읽는다. 계획이 바뀌면 두 파일만 교체하면 된다.
 """
 
 import json
@@ -33,6 +35,7 @@ st.set_page_config(
 )
 
 CRIT_PAIRS = pairs(len(CRIT))
+N_STRAT = sum(len(STRAT[f]) for f in FIELDS)
 
 st.markdown(
     """
@@ -535,7 +538,7 @@ st.title("시흥시 지역균형발전 기본계획")
 
 st.caption(
     "우선순위사업 선정 전문가 AHP 조사 · "
-    f"6개 분야 · 16개 전략 · {len(TASKS)}개 핵심과제 · 평가기준 4개"
+    f"6개 분야 · {N_STRAT}개 전략 · {len(TASKS)}개 핵심과제 · 평가기준 4개"
 )
 
 st.progress(
@@ -553,7 +556,7 @@ if st.session_state.page == 1:
     st.header("응답자 정보")
 
     st.write(
-        "본 조사는 「시흥시 균형발전 기본계획」의 42개 핵심과제 가운데 "
+        f"본 조사는 「시흥시 균형발전 기본계획」의 {len(TASKS)}개 핵심과제 가운데 "
         "계획기간 중 우선 추진할 13개 과제를 선정하기 위한 근거를 마련하는 조사입니다."
     )
 
