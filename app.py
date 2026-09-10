@@ -100,51 +100,24 @@ st.markdown(
     
 <style>
 
-/* ─────────────────────────────────────────────
-   분야별 전략·핵심과제 참고자료
-───────────────────────────────────────────── */
+st.markdown(
+    """
+<style>
 
-div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
-    background: #eef4ff;
-    border: 1px solid #cbd9f2;
-    border-left: 5px solid #2f67c7;
-    border-radius: 12px;
-
-    padding: 0.65rem 0.85rem;
-}
-
-.reference-anchor {
-    display: none;
-}
-
-.reference-content {
-    padding: 0;
-    margin: 0;
-}
-
-.reference-title {
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: #163a63;
-    line-height: 1.3;
-
-    margin: 0 0 0.18rem 0;
-}
-
-.reference-desc {
-    font-size: 0.82rem;
-    font-weight: 400;
-    color: #596273;
-    line-height: 1.35;
-
-    margin: 0;
-}
+/* =========================================================
+   1. 전체 화면
+========================================================= */
 
 .block-container {
     max-width: 960px;
     padding-top: 2rem;
     padding-bottom: 4rem;
 }
+
+
+/* =========================================================
+   2. AHP 쌍대비교 문항
+========================================================= */
 
 .ahp-card {
     border-left: 4px solid #1b365d;
@@ -172,26 +145,37 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
     padding: 0 0.7rem;
 }
 
+
+/* 슬라이더 좌우 항목 */
+
 .ahp-ends {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     font-size: 0.9rem;
     font-weight: 600;
     color: #374151;
-    margin-top: 0.3rem;
+
+    margin-top: 0.30rem;
     margin-bottom: 0.12rem;
 }
+
+
+/* 9 · 7 · 5 · 3 · 1 · 3 · 5 · 7 · 9 */
 
 .ahp-score-grid {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     font-size: 0.82rem;
     font-weight: 600;
     color: #4b5563;
+
     padding-left: 0;
     padding-right: 0;
+
     margin-top: 0.12rem;
     margin-bottom: -0.20rem;
 }
@@ -202,6 +186,9 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
     justify-content: center;
     white-space: nowrap;
 }
+
+
+/* Streamlit 슬라이더 */
 
 [data-testid="stSliderThumbValue"] {
     display: none !important;
@@ -216,15 +203,21 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
     padding-right: 0 !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+
     margin-top: 0 !important;
     margin-bottom: -0.45rem !important;
 }
 
+
+/* 선택 결과 */
+
 .ahp-pick {
-    font-size: 0.9rem;
+    font-size: 0.90rem;
     font-weight: 400;
     color: #8a9199;
-    line-height: 1.2;
+
+    line-height: 1.20;
+
     margin-top: 0 !important;
     margin-bottom: 0.05rem;
 }
@@ -234,123 +227,132 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
     font-weight: 600;
 }
 
-/* ─────────────────────────────────────────────
-   일관성 재확인 목록 공통
-───────────────────────────────────────────── */
 
-.recheck-wrap {
-    margin-left: 1rem;
-    margin-top: 0.2rem;
-    margin-bottom: 0.4rem;
-}
+/* =========================================================
+   3. 일관성 검토 / 판단 방향 재확인
+   두 영역의 크기와 간격을 동일하게 사용
+========================================================= */
 
-.recheck-title {
-    font-size: 1rem;
-    font-weight: 700;
-    margin-top: 0.10rem;
-    margin-bottom: 0.08rem;
-}
-
-.recheck-list {
-    font-size: 0.92rem;
-    font-weight: 400;
-    line-height: 1.35;
-    margin-top: 0;
-    margin-bottom: 0.10rem;
-}
-
-.recheck-item {
-    font-size: inherit;
-    font-weight: 400;
-    line-height: inherit;
-    margin: 0;
-    padding: 0;
-}
-
-.recheck-item b {
-    font-weight: 600;
-}
-
-/* ─────────────────────────────────────────────
-   판단 방향 재확인 목록
-───────────────────────────────────────────── */
-
+.recheck-wrap,
 .trans-wrap {
     margin-left: 1rem;
-    margin-top: 0.2rem;
-    margin-bottom: 0.4rem;
+    margin-top: 0.20rem;
+    margin-bottom: 0.40rem;
 }
 
+.recheck-title,
 .trans-title {
     font-size: 1rem;
     font-weight: 700;
+    color: #111827;
+
+    line-height: 1.30;
+
     margin-top: 0.10rem;
     margin-bottom: 0.08rem;
 }
 
+.recheck-list,
 .trans-list {
     font-size: 0.92rem;
     font-weight: 400;
+    color: #374151;
+
     line-height: 1.35;
+
     margin-top: 0;
     margin-bottom: 0.10rem;
 }
 
+.recheck-item,
 .trans-item {
     font-size: inherit;
     font-weight: 400;
     line-height: inherit;
+
     margin: 0;
     padding: 0;
 }
 
-.trans-bullet {
+.recheck-item b,
+.trans-item b {
     font-weight: 600;
+}
+
+.trans-bullet {
+    font-weight: 400;
     color: #6b7280;
 }
 
 
+/* =========================================================
+   4. 첫 화면 - 전문가 AHP 조사 표지
+========================================================= */
 
-/* ─────────────────────────────────────────────
-   첫 화면 - 전문가 AHP 조사 표지
-───────────────────────────────────────────── */
 .cover-title {
     font-size: 1.45rem;
     font-weight: 800;
     color: #163a63;
+
     line-height: 1.35;
+
+    margin-top: 0;
     margin-bottom: 0.35rem;
 }
 
 .cover-intro {
     font-size: 0.95rem;
-    line-height: 1.55;
+    font-weight: 400;
     color: #374151;
-    margin-bottom: 0.9rem;
+
+    line-height: 1.55;
+
+    margin-top: 0;
+    margin-bottom: 0.90rem;
 }
 
+
+/* 응답 안내 전체 박스 */
+
 .cover-box {
+    background: #ffffff;
+
     border: 1px solid #d8dee8;
     border-radius: 14px;
+
     padding: 1rem 1.1rem;
-    margin-top: 0.7rem;
+
+    margin-top: 0.70rem;
     margin-bottom: 1rem;
-    background: #ffffff;
 }
 
 .cover-box-title {
     font-size: 1.08rem;
     font-weight: 800;
     color: #163a63;
-    margin-bottom: 0.6rem;
+
+    margin-top: 0;
+    margin-bottom: 0.60rem;
 }
+
+
+/* 1·2·3 평가 단계 */
 
 .cover-step {
     display: grid;
-    grid-template-columns: 2.6rem 3rem 1fr 7.2rem;
+
+    grid-template-columns:
+        2.6rem
+        3rem
+        1fr
+        7.2rem;
+
     align-items: center;
+
     column-gap: 0.65rem;
-    padding: 0.7rem 0.15rem;
+
+    padding: 0.70rem 0.15rem;
+
     border-bottom: 1px solid #e8edf3;
 }
 
@@ -358,128 +360,309 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
     border-bottom: none;
 }
 
+
+/* 단계 번호 */
+
 .cover-no {
     width: 2.25rem;
     height: 2.25rem;
+
     border-radius: 10px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     background: #2f67c7;
     color: #ffffff;
+
     font-size: 1rem;
     font-weight: 800;
 }
 
+
+/* 단계 아이콘 */
+
 .cover-icon {
     width: 2.4rem;
     height: 2.4rem;
+
     border-radius: 50%;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     background: #eef4ff;
+
     font-size: 1.25rem;
 }
+
+
+/* 단계 제목 */
 
 .cover-step-name {
     font-size: 0.98rem;
     font-weight: 800;
     color: #111827;
+
+    line-height: 1.30;
+
     margin-bottom: 0.08rem;
 }
 
+
+/* 단계 설명 */
+
 .cover-step-desc {
     font-size: 0.84rem;
+    font-weight: 400;
     color: #596273;
+
     line-height: 1.35;
 }
 
+
+/* 우측 쌍대비교 / 5점 척도 */
+
 .cover-badge {
     text-align: center;
+
     padding: 0.48rem 0.5rem;
+
     border-radius: 10px;
+
     background: #eef4ff;
     color: #2456a6;
+
     font-size: 0.82rem;
     font-weight: 800;
+
     line-height: 1.25;
 }
 
+
+/* 쌍대비교 방법 */
+
 .cover-help {
     background: #f3f6fa;
+
     border-radius: 10px;
+
     padding: 0.62rem 0.75rem;
+
     margin-top: 0.65rem;
+
     font-size: 0.85rem;
-    line-height: 1.4;
+    font-weight: 400;
     color: #374151;
+
+    line-height: 1.40;
 }
+
+
+/* 일관성 검토 */
 
 .cover-check-yellow {
     background: #fff7d6;
+
     border-radius: 10px;
+
     padding: 0.62rem 0.75rem;
+
     margin-top: 0.45rem;
+
     font-size: 0.84rem;
-    line-height: 1.4;
+    font-weight: 400;
     color: #8a6500;
+
+    line-height: 1.40;
 }
+
+
+/* 판단 방향 재확인 */
 
 .cover-check-red {
     background: #fde7e7;
+
     border-radius: 10px;
+
     padding: 0.62rem 0.75rem;
+
     margin-top: 0.45rem;
+
     font-size: 0.84rem;
-    line-height: 1.4;
+    font-weight: 400;
     color: #b42318;
+
+    line-height: 1.40;
 }
+
+
+/* 응답시간 */
 
 .cover-time {
     font-size: 0.88rem;
     font-weight: 700;
     color: #374151;
+
     margin-top: 0.55rem;
+    margin-bottom: 0;
 }
+
+
+/* 응답자 정보 제목 */
 
 .cover-section-title {
     font-size: 1.05rem;
     font-weight: 800;
     color: #163a63;
-    margin-top: 0.35rem;
+
+    margin-top: 0.55rem;
     margin-bottom: 0.45rem;
 }
 
-@media (max-width: 700px) {
-    .cover-step {
-        grid-template-columns: 2.4rem 2.7rem 1fr;
-        row-gap: 0.35rem;
-    }
 
-    .cover-badge {
-        grid-column: 3;
-        justify-self: start;
-        width: fit-content;
-    }
+/* =========================================================
+   5. 분야별 전략·핵심과제 참고자료
+========================================================= */
+
+/*
+reference-anchor가 들어 있는 Streamlit container만
+참고자료 전용 박스로 변경
+*/
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
+    background: #eef4ff !important;
+
+    border: 1px solid #cbd9f2 !important;
+    border-left: 5px solid #2f67c7 !important;
+
+    border-radius: 12px !important;
+
+    padding: 0.55rem 0.85rem !important;
+
+    margin-top: 0.60rem;
+    margin-bottom: 0.65rem;
 }
+
+
+/* CSS 선택을 위한 숨김 anchor */
+
+.reference-anchor {
+    display: none;
+}
+
+
+/* 참고자료 박스 안쪽 여백 제거 */
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
+[data-testid="stHorizontalBlock"] {
+    align-items: center;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
+[data-testid="stMarkdownContainer"] {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
+[data-testid="stMarkdownContainer"] p {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+/* 참고자료 왼쪽 텍스트 */
+
+.reference-content {
+    margin: 0;
+    padding: 0.05rem 0;
+}
+
+.reference-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #163a63;
+
+    line-height: 1.30;
+
+    margin: 0 0 0.15rem 0;
+}
+
+.reference-desc {
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: #596273;
+
+    line-height: 1.35;
+
+    margin: 0;
+}
+
+
+/* 참고자료 다운로드 버튼 */
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
+[data-testid="stDownloadButton"] {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
+[data-testid="stDownloadButton"] button {
+    min-height: 2.6rem;
+
+    border-radius: 9px;
+
+    border: 1px solid #b8cae8;
+
+    background: #ffffff;
+    color: #163a63;
+
+    font-size: 0.84rem;
+    font-weight: 700;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
+[data-testid="stDownloadButton"] button:hover {
+    border-color: #2f67c7;
+    color: #174ea6;
+
+    background: #f8fbff;
+}
+
+
+/* =========================================================
+   6. Streamlit 공통 Container
+========================================================= */
 
 [data-testid="stVerticalBlockBorderWrapper"] {
     border-radius: 12px;
 }
 
+
+/* =========================================================
+   7. 모바일
+========================================================= */
+
 @media (max-width: 700px) {
+
     .block-container {
         padding-left: 1rem;
         padding-right: 1rem;
     }
+
+
+    /* AHP */
 
     .ahp-pair {
         font-size: 0.95rem;
     }
 
     .ahp-ends {
-        font-size: 0.8rem;
+        font-size: 0.80rem;
     }
 
     .ahp-score-grid {
@@ -489,12 +672,53 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
     .ahp-pick {
         font-size: 0.84rem;
     }
+
+
+    /* 첫 화면 */
+
+    .cover-title {
+        font-size: 1.25rem;
+    }
+
+    .cover-step {
+        grid-template-columns:
+            2.4rem
+            2.7rem
+            1fr;
+
+        row-gap: 0.35rem;
+    }
+
+    .cover-badge {
+        grid-column: 3;
+
+        justify-self: start;
+
+        width: fit-content;
+
+        margin-top: 0.15rem;
+    }
+
+
+    /* 참고자료 */
+
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
+        padding: 0.65rem 0.75rem !important;
+    }
+
+    .reference-title {
+        font-size: 0.90rem;
+    }
+
+    .reference-desc {
+        font-size: 0.80rem;
+    }
 }
+
 </style>
 """,
     unsafe_allow_html=True,
 )
-
 DEFAULTS = {
     "page": 1,
     "meta": {},
