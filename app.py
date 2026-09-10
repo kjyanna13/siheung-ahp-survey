@@ -175,13 +175,15 @@ st.markdown(
 
 .trans-list {
     font-size: 0.82rem;
+    font-weight: 400;
     line-height: 1.35;
+    margin-top: 0;
+    margin-bottom: 0.10rem;
 }
 
 .trans-item {
     margin: 0;
     padding: 0;
-    font-weight: 400;
 }
 
 .trans-bullet {
