@@ -111,12 +111,13 @@ st.markdown(
     font-weight: 600;
     color: #4b5563;
 
-    padding-left: 0.6rem;
-    padding-right: 0.6rem;
+    padding-left: 0.15rem;
+    padding-right: 0.15rem;
 
     margin-top: 0.35rem;
-    margin-bottom: -0.4rem;
+    margin-bottom: -0.35rem;
 }
+
 
 /* ─────────────────────────────────────────────
    Streamlit 슬라이더
@@ -131,26 +132,14 @@ st.markdown(
 }
 
 [data-testid="stSlider"] {
-    padding-left: 0.6rem;
-    padding-right: 0.6rem;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
     padding-top: 0.05rem;
     padding-bottom: 0 !important;
-    margin-bottom: -0.35rem !important;
+
+    margin-bottom: -0.30rem !important;
 }
 
-.ahp-pick {
-    font-size: 0.9rem;
-    font-weight: 400;
-    color: #8a9199;
-    line-height: 1.4;
-    margin-top: 0 !important;
-    margin-bottom: 0.05rem;
-}
-
-.ahp-pick b {
-    color: #6b7280;
-    font-weight: 600;
-}
 
 /* ─────────────────────────────────────────────
    선택 결과
@@ -162,10 +151,15 @@ st.markdown(
 
     color: #8a9199;
 
-    line-height: 1.6;
+    line-height: 1.4;
 
-    margin-top: 0.75rem;
-    margin-bottom: 0.15rem;
+    margin-top: 0 !important;
+    margin-bottom: 0.05rem;
+}
+
+.ahp-pick b {
+    color: #6b7280;
+    font-weight: 600;
 }
 
 
