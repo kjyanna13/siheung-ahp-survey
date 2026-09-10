@@ -2056,32 +2056,122 @@ elif st.session_state.page == 4:
 elif st.session_state.page == 5:
     meta = st.session_state.meta
 
+
     st.markdown(
         (
             '<div class="page-head">'
             '<div class="page-title">응답 검토 및 제출</div>'
             '<div class="page-desc">'
-            '입력한 응답과 일관성 검토 결과를 확인한 후 최종 제출해 주십시오.'
+            '입력하신 응답이 어떤 결과로 이어졌는지 확인하신 후 최종 제출해 주십시오.'
             '</div>'
             '</div>'
         ),
         unsafe_allow_html=True,
     )
-
+ 
+    # ── 응답자 정보 ─────────────────────────────────────────
     st.markdown(
         (
             '<div class="page-info-card">'
-            f'<b>{meta.get("name", "")}</b> · '
-            f'{meta.get("org", "")} · '
-            f'{meta.get("field", "")} · '
+            f'성명 <b>{meta.get("name", "")}</b> &nbsp;·&nbsp; '
+            f'소속 <b>{meta.get("org", "")}</b> &nbsp;·&nbsp; '
+            f'소관 분야 <b>{meta.get("field", "")}</b> &nbsp;·&nbsp; '
             f'경력 {meta.get("career", "")}'
             '</div>'
         ),
         unsafe_allow_html=True,
     )
-
+ 
     criteria_diag = st.session_state.crit_diag or {}
-
+ 
+    # ── ① 평가기준 가중치 ───────────────────────────────────
+    #    Ⅱ부 쌍대비교로 계산된 값. 새로 계산하지 않고 그대로 표시한다.
+    crit_weights = criteria_diag.get("weights")
+ 
+    if crit_weights:
+        st.markdown("##### 평가기준 가중치")
+        st.caption(
+            "Ⅱ부 쌍대비교로 도출된 결과입니다. "
+            "본인의 판단과 다르다면 「응답 수정」으로 돌아가 조정하실 수 있습니다."
+        )
+ 
+        st.dataframe(
+            [
+                {
+                    "순위": rank,
+                    "평가기준": f"{CRIT[i][0]} {CRIT[i][1]}",
+                    "가중치": f"{w:.1%}",
+                }
+                for rank, (i, w) in enumerate(
+                    sorted(
+                        enumerate(crit_weights),
+                        key=lambda x: -x[1],
+                    ),
+                    1,
+                )
+            ],
+            width="stretch",
+            hide_index=True,
+        )
+ 
+    # ── ② 소관 분야 전략·핵심과제 가중치 ────────────────────
+    if st.session_state.hier:
+        with st.expander("소관 분야 전략·핵심과제 가중치 보기"):
+            st.caption(
+                "블록별로 도출된 상대적 중요도입니다. "
+                "각 블록의 합은 100%입니다."
+            )
+ 
+            for code, block in st.session_state.hier.items():
+                weights = block["diag"].get("weights")
+ 
+                if not weights:
+                    continue
+ 
+                st.markdown(f"**{block['title']}**")
+ 
+                st.dataframe(
+                    [
+                        {
+                            "순위": rank,
+                            "항목": block["labels"][i],
+                            "가중치": f"{w:.1%}",
+                        }
+                        for rank, (i, w) in enumerate(
+                            sorted(
+                                enumerate(weights),
+                                key=lambda x: -x[1],
+                            ),
+                            1,
+                        )
+                    ],
+                    width="stretch",
+                    hide_index=True,
+                )
+ 
+    # ── ③ 실행가능성·파급효과 평정 결과 ─────────────────────
+    if st.session_state.ratings:
+        rating_rows = [
+            {
+                "핵심과제": value["name"],
+                "실행 가능성": value["feas"],
+                "파급·연계 효과": value["spill"],
+            }
+            for value in st.session_state.ratings.values()
+        ]
+ 
+        with st.expander(
+            f"실행가능성·파급효과 평정 결과 보기 ({len(rating_rows)}개 과제)"
+        ):
+            st.dataframe(
+                rating_rows,
+                width="stretch",
+                hide_index=True,
+            )
+ 
+    # ── ④ 일관성 검토 결과 ──────────────────────────────────
+    st.markdown("##### 일관성 검토 결과")
+ 
     rows = [
         {
             "평가영역": "평가기준 중요도",
@@ -2089,15 +2179,15 @@ elif st.session_state.page == 5:
             "CR": (
                 "-"
                 if criteria_diag.get("cr") is None
-                else f"{criteria_diag['cr']:.3f}"
+                else f"{abs(criteria_diag['cr']):.3f}"
             ),
             "판정": criteria_diag.get("status", "-"),
         }
     ]
-
+ 
     for code, block in st.session_state.hier.items():
         diag = block["diag"]
-
+ 
         rows.append(
             {
                 "평가영역": block["title"],
@@ -2105,73 +2195,80 @@ elif st.session_state.page == 5:
                 "CR": (
                     "-"
                     if diag.get("cr") is None
-                    else f"{diag['cr']:.3f}"
+                    else f"{abs(diag['cr']):.3f}"
                 ),
                 "판정": diag.get("status", "해당없음"),
             }
         )
-
+ 
     st.dataframe(
         rows,
         width="stretch",
         hide_index=True,
     )
-
+ 
+    # ── ⑤ 「검정 제외」 각주 ────────────────────────────────
+    if any(row["판정"] == "검정 제외" for row in rows):
+        st.caption(
+            "※ 두 항목만 비교하는 블록은 일관성비율(CR)을 정의할 수 없어 "
+            "「검정 제외」로 표시됩니다. 응답 누락이 아닙니다."
+        )
+ 
     criteria_viol = criteria_diag.get("transitivity", []) or []
-
+ 
     hierarchy_viol_count = sum(
         len(block["diag"].get("transitivity", []) or [])
         for block in st.session_state.hier.values()
     )
-
+ 
     bad = [
         row
         for row in rows
         if row["판정"] == "재검토"
     ]
-
+ 
     if bad:
         st.warning(
             f"CR이 {CR_THRESHOLD:.2f}를 초과한 비교블록이 {len(bad)}개 있습니다. "
             "제출은 가능하지만 이전 단계에서 응답을 다시 확인하는 것을 권합니다."
         )
-
+ 
     if criteria_viol or hierarchy_viol_count:
         st.error(
             "판단 방향이 서로 맞지 않는 응답이 남아 있습니다. "
             "이전 단계에서 해당 비교를 다시 확인해 주십시오."
         )
-
+ 
     if not bad and not criteria_viol and hierarchy_viol_count == 0:
         st.success(
             "일관성 검정이 가능한 모든 비교블록이 기준을 충족했습니다."
         )
-
+ 
     st.subheader("자유 의견")
-
+ 
     op1 = st.text_area(
         f"1. {len(TASKS)}개 핵심과제 외에 우선순위에 포함되어야 한다고 보시는 과제가 있습니까?",
         key="op_missing",
     )
-
+ 
     op2 = st.text_area(
         "2. 특정 과제의 실행에 큰 제약이 있다면, 그 과제와 제약 요인을 적어 주십시오.",
         key="op_constraint",
     )
-
+ 
     op3 = st.text_area(
         "3. 평가기준·분석방법에 대한 의견이 있으면 적어 주십시오.",
         key="op_method",
     )
-
+ 
     st.session_state.opinions = {
         "missing": op1,
         "constraint": op2,
         "method": op3,
     }
-
+ 
     pairwise_long = []
-
+ 
     for (i, j), value in zip(
         CRIT_PAIRS,
         st.session_state.crit_vals,
@@ -2185,7 +2282,7 @@ elif st.session_state.page == 5:
                 "value": value,
             }
         )
-
+ 
     for code, block in st.session_state.hier.items():
         for (i, j), value in zip(
             pairs(len(block["items"])),
@@ -2200,7 +2297,7 @@ elif st.session_state.page == 5:
                     "value": value,
                 }
             )
-
+ 
     payload = {
         "responseId": st.session_state.response_id,
         "schema": "siheung-ahp-2026-09",
@@ -2239,30 +2336,30 @@ elif st.session_state.page == 5:
         },
         "submittedAt": storage.now_kst(),
     }
-
+ 
     json_text = json.dumps(
         payload,
         ensure_ascii=False,
         indent=2,
     )
-
+ 
     if st.session_state.submitted:
         st.success(st.session_state.submit_msg)
         st.caption(
             f"접수번호 {st.session_state.response_id} · "
             "응답이 제출되었습니다. 감사합니다."
         )
-
+ 
     else:
         c1, c2 = st.columns([1, 2])
-
+ 
         with c1:
             if st.button(
                 "← 응답 수정",
                 width="stretch",
             ):
                 go(2 if is_general() else 4)
-
+ 
         with c2:
             if st.button(
                 "최종 제출",
@@ -2274,22 +2371,22 @@ elif st.session_state.page == 5:
                 ),
             ):
                 ok, message = storage.save(payload)
-
+ 
                 st.session_state.submitted = ok
                 st.session_state.submit_msg = message
-
+ 
                 if ok:
                     st.rerun()
                 else:
                     st.error(
                         f"온라인 접수에 실패했습니다 — {message}"
                     )
-
+ 
                     st.info(
                         "아래 '응답 파일 내려받기'를 눌러 저장한 뒤 담당자에게 보내 주십시오. "
                         "응답은 유실되지 않습니다."
                     )
-
+ 
     st.download_button(
         "응답 파일 내려받기",
         data=json_text.encode("utf-8"),
@@ -2300,33 +2397,33 @@ elif st.session_state.page == 5:
         mime="application/json",
         width="stretch",
     )
-
-
+ 
+ 
 with st.sidebar:
     st.markdown("### 진행 상황")
     st.caption(f"접수번호 {st.session_state.response_id}")
-
+ 
     if rtype():
         st.write(f"**소관 분야:** {rtype()}")
-
+ 
     st.write(
         f"평가기준 중요도 "
         f"{len(st.session_state.crit_vals)}/{len(CRIT_PAIRS)}문항"
     )
-
+ 
     if not is_general() and rtype():
         _nb, nq = block_stats(rtype())
-
+ 
         answered = sum(
             len(block.get("values", []))
             for block in st.session_state.hier.values()
         )
-
+ 
         st.write(
             f"전략·핵심과제 중요도 "
             f"{answered}/{nq}문항"
         )
-
+ 
         done = sum(
             1
             for value in st.session_state.ratings.values()
@@ -2335,14 +2432,14 @@ with st.sidebar:
                 and value.get("spill") is not None
             )
         )
-
+ 
         st.write(
             f"실행가능성·파급효과 평가 "
             f"{done}/{len(tasks_of(rtype()))}과제"
         )
-
+ 
     st.divider()
-
+ 
     temp_hier = {
         code: {
             key: value
@@ -2351,7 +2448,7 @@ with st.sidebar:
         }
         for code, block in st.session_state.hier.items()
     }
-
+ 
     temp_data = {
         "meta": st.session_state.meta,
         "response_id": st.session_state.response_id,
@@ -2360,7 +2457,7 @@ with st.sidebar:
         "ratings": st.session_state.ratings,
         "opinions": st.session_state.opinions,
     }
-
+ 
     st.download_button(
         "응답 임시저장",
         data=json.dumps(
@@ -2375,14 +2472,14 @@ with st.sidebar:
         mime="application/json",
         width="stretch",
     )
-
+ 
     st.caption(
         "설문을 중단해야 하는 경우 현재 응답을 저장해 두었다가, "
         "다음 접속 시 첫 화면의 '이전 응답 이어서 하기'에서 불러올 수 있습니다."
     )
-
+ 
     st.divider()
-
+ 
     st.caption(
         "문의 : 시흥시정연구원 김주영 연구위원\n\n"
         "031-317-0141"
