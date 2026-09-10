@@ -53,35 +53,73 @@ REFERENCE_PDF = (
 def render_reference_pdf():
     """첫 화면에서 분야별 전략·핵심과제 참고자료를 제공합니다."""
 
-    with st.expander(
-        "분야별 전략·핵심과제 체계 참고자료 (PDF)",
-        expanded=False,
-    ):
-        st.caption(
-            "6개 분야의 목표·전략·핵심과제 전체 체계를 정리한 참고자료입니다. "
-            "소관 분야의 평가구조를 확인할 때 활용해 주십시오."
+    st.markdown(
+        (
+            '<div class="reference-card">'
+            '<div class="reference-title">'
+            '📄 분야별 전략·핵심과제 체계 참고자료'
+            '</div>'
+            '<div class="reference-desc">'
+            '6개 분야의 목표·전략·핵심과제 전체 체계를 정리한 자료입니다. '
+            '응답 전 소관 분야의 평가구조를 확인해 주십시오.'
+            '</div>'
+            '</div>'
+        ),
+        unsafe_allow_html=True,
+    )
+
+    if REFERENCE_PDF.exists():
+        pdf_bytes = REFERENCE_PDF.read_bytes()
+
+        st.download_button(
+            "📄 참고자료 PDF 내려받기",
+            data=pdf_bytes,
+            file_name="시흥시_분야별_전략_핵심과제_체계.pdf",
+            mime="application/pdf",
+            width="stretch",
         )
 
-        if REFERENCE_PDF.exists():
-            pdf_bytes = REFERENCE_PDF.read_bytes()
+    else:
+        st.info(
+            "참고자료 PDF가 등록되지 않았습니다. "
+            "프로젝트의 assets 폴더에 "
+            "'시흥시_분야별_전략_핵심과제_체계.pdf' 파일을 추가해 주세요."
+        )
 
-            st.download_button(
-                "참고자료 PDF 내려받기",
-                data=pdf_bytes,
-                file_name="시흥시_분야별_전략_핵심과제_체계.pdf",
-                mime="application/pdf",
-                width="stretch",
-            )
-        else:
-            st.info(
-                "참고자료 PDF가 등록되지 않았습니다. "
-                "프로젝트의 assets 폴더에 "
-                "'시흥시_분야별_전략_핵심과제_체계.pdf' 파일을 추가해 주세요."
-            )
 
 st.markdown(
     """
+    
 <style>
+
+/* ─────────────────────────────────────────────
+   참고자료 - 응답안내 스타일과 통일
+───────────────────────────────────────────── */
+
+.reference-card {
+    background: #ffffff;
+    border: 1px solid #d8dee8;
+    border-left: 4px solid #2f67c7;
+    border-radius: 10px;
+
+    padding: 0.70rem 0.85rem;
+    margin-top: 0.65rem;
+    margin-bottom: 0.45rem;
+}
+
+.reference-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #163a63;
+    margin-bottom: 0.10rem;
+}
+
+.reference-desc {
+    font-size: 0.82rem;
+    line-height: 1.35;
+    color: #596273;
+}
+
 .block-container {
     max-width: 960px;
     padding-top: 2rem;
