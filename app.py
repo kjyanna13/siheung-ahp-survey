@@ -157,7 +157,7 @@ st.markdown(
 }
 
 .recheck-item {
-    font-size: inherit;
+    font-size: 0.92rem;
     font-weight: 400;
     line-height: inherit;
     margin: 0;
