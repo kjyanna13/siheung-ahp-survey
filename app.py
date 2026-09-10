@@ -149,7 +149,7 @@ st.markdown(
     padding-bottom: 0 !important;
 
     margin-top: 0 !important;
-    margin-bottom: -0.20rem !important;
+    margin-bottom: -0.45rem !important;
 }
 
 
@@ -164,7 +164,7 @@ st.markdown(
 
     line-height: 1.4;
 
-    margin-top: 0 !important;
+    margin-top: -0.10 !important;
     margin-bottom: 0.05rem;
 }
 
