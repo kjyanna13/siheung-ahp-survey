@@ -460,24 +460,28 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
                         f"오른쪽 항목이 {abs(value)}점 중요"
                     )
 
-                st.markdown(
+                check_lines.append(
                     f"{rank}. {a} ↔ {b} "
-                    f"**({result_text})**"
+                    f"<b>({result_text})</b>"
                 )
+
             st.markdown(
-                "  \n".join(check_lines)
+                '<div style="line-height:1.35;">'
+                + '<br>'.join(check_lines)
+                + '</div>',
+                unsafe_allow_html=True,
             )
-        
 
         st.caption(
             "※ 현재 응답이 본인의 판단을 정확히 반영한 것이라면 "
             "CR을 낮추기 위해 억지로 수정할 필요는 없습니다."
         )
+
     else:
         st.info(
             r["message"]
         )
-
+        
     # ── 2. 판단 방향(전이성) 확인 ───────────────────────────
     if extra_transitivity and len(labels) >= 3:
         viol, tot = core.transitivity_violations(
