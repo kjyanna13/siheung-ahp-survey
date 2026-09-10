@@ -742,7 +742,136 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) [data-tes
 
 
 /* =========================================================
-   8. 페이지 공통 시작부
+   8. 응답자 정보 카드
+========================================================= */
+
+.respondent-panel {
+    border: 1px solid #cfd9e8;
+    border-radius: 14px;
+    background: #ffffff;
+    padding: 1rem 1.05rem;
+    margin-top: 0.65rem;
+    margin-bottom: 0.9rem;
+}
+
+.respondent-head {
+    display: flex;
+    align-items: center;
+    gap: 0.70rem;
+    margin-bottom: 0.70rem;
+}
+
+.respondent-icon {
+    width: 2.55rem;
+    height: 2.55rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e8f1ff;
+    color: #2f67c7;
+    font-size: 1.25rem;
+    flex: 0 0 auto;
+}
+
+.respondent-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #163a63;
+    line-height: 1.25;
+    margin: 0;
+}
+
+.respondent-desc {
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: #6b7280;
+    line-height: 1.35;
+    margin-top: 0.08rem;
+}
+
+.respondent-note {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    background: #eef4ff;
+    border-radius: 9px;
+    padding: 0.55rem 0.70rem;
+    margin-top: 0.45rem;
+    font-size: 0.80rem;
+    line-height: 1.35;
+    color: #596273;
+}
+
+.respondent-note b {
+    color: #2456a6;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.respondent-anchor),
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .respondent-anchor) {
+    border: 1px solid #cfd9e8 !important;
+    border-radius: 14px !important;
+    background: #ffffff !important;
+    padding: 0.85rem 1rem !important;
+    gap: 0.35rem !important;
+    margin-top: 0.55rem !important;
+    margin-bottom: 0.85rem !important;
+}
+
+.respondent-anchor {
+    display: none !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.respondent-anchor)
+[data-testid="stVerticalBlock"] > div:has(.respondent-anchor),
+[data-testid="stVerticalBlock"] > [data-testid="stElementContainer"]:has(.respondent-anchor) {
+    display: none !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.respondent-anchor) [data-testid="stMarkdownContainer"],
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.respondent-anchor) [data-testid="stMarkdownContainer"] p,
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .respondent-anchor) [data-testid="stMarkdownContainer"],
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .respondent-anchor) [data-testid="stMarkdownContainer"] p {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.respondent-anchor) label,
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .respondent-anchor) label {
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    color: #163a63 !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.respondent-anchor) input,
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .respondent-anchor) input {
+    border-radius: 8px !important;
+}
+
+@media (max-width: 700px) {
+    .respondent-title {
+        font-size: 1.05rem;
+    }
+
+    .respondent-desc {
+        font-size: 0.79rem;
+    }
+
+    .respondent-note {
+        display: block;
+    }
+
+    .respondent-note b {
+        display: block;
+        margin-bottom: 0.12rem;
+    }
+}
+
+
+/* =========================================================
+   9. 페이지 공통 시작부
    첫 화면의 제목·설명·안내 카드와 시각적 위계를 통일
 ========================================================= */
 
@@ -1236,47 +1365,95 @@ if st.session_state.page == 1:
 
     render_reference_pdf()
 
-    st.markdown(
-        '<div class="cover-section-title">응답자 정보</div>',
-        unsafe_allow_html=True,
-    )
-
-    c1, c2 = st.columns(2)
-
-    with c1:
-        name = st.text_input(
-            "성명 *",
-            value=st.session_state.meta.get("name", ""),
-        )
-        org = st.text_input(
-            "소속 *",
-            value=st.session_state.meta.get("org", ""),
+    with st.container(border=True):
+        st.markdown(
+            '<div class="respondent-anchor"></div>',
+            unsafe_allow_html=True,
         )
 
-    with c2:
-        prev = st.session_state.meta.get("field", RESPONDENT_TYPES[0])
-
-        field = st.selectbox(
-            "소관 분야 *",
-            RESPONDENT_TYPES,
-            index=RESPONDENT_TYPES.index(prev) if prev in RESPONDENT_TYPES else 0,
-            help="해당하는 소관 분야를 선택해 주십시오.",
+        st.markdown(
+            (
+                '<div class="respondent-head">'
+                '<div class="respondent-icon">👤</div>'
+                '<div>'
+                '<div class="respondent-title">응답자 정보</div>'
+                '<div class="respondent-desc">'
+                '전문가 분석을 위해 아래 기본 정보를 입력해 주십시오.'
+                '</div>'
+                '</div>'
+                '</div>'
+            ),
+            unsafe_allow_html=True,
         )
 
-        careers = [
-            "5년 미만",
-            "5~10년",
-            "10~15년",
-            "15~20년",
-            "20년 이상",
-        ]
+        c1, c2 = st.columns(
+            2,
+            gap="large",
+        )
 
-        prev_career = st.session_state.meta.get("career", careers[0])
+        with c1:
+            name = st.text_input(
+                "성명 *",
+                value=st.session_state.meta.get("name", ""),
+                placeholder="성명을 입력해 주세요.",
+            )
 
-        career = st.selectbox(
-            "관련 분야 경력",
-            careers,
-            index=careers.index(prev_career) if prev_career in careers else 0,
+            prev = st.session_state.meta.get(
+                "field",
+                RESPONDENT_TYPES[0],
+            )
+
+            field = st.selectbox(
+                "소관 분야 *",
+                RESPONDENT_TYPES,
+                index=(
+                    RESPONDENT_TYPES.index(prev)
+                    if prev in RESPONDENT_TYPES
+                    else 0
+                ),
+                help="해당하는 소관 분야를 선택해 주십시오.",
+            )
+
+        with c2:
+            org = st.text_input(
+                "소속 *",
+                value=st.session_state.meta.get("org", ""),
+                placeholder="소속 기관을 입력해 주세요.",
+            )
+
+            careers = [
+                "5년 미만",
+                "5~10년",
+                "10~15년",
+                "15~20년",
+                "20년 이상",
+            ]
+
+            prev_career = st.session_state.meta.get(
+                "career",
+                careers[0],
+            )
+
+            career = st.selectbox(
+                "관련 분야 경력",
+                careers,
+                index=(
+                    careers.index(prev_career)
+                    if prev_career in careers
+                    else 0
+                ),
+            )
+
+        st.markdown(
+            (
+                '<div class="respondent-note">'
+                '<b>ℹ 응답정보 안내</b>'
+                '<span>'
+                '입력한 정보는 전문가 응답 구분 및 분석을 위한 용도로 활용됩니다.'
+                '</span>'
+                '</div>'
+            ),
+            unsafe_allow_html=True,
         )
 
     if field in GENERAL_TYPES:
