@@ -282,11 +282,16 @@ st.markdown(
 }
 
 /* 일관성 검토 성공 메시지 */
-[data-testid="stAlert"] p {
-    font-size: 0.85rem !important;
-    line-height: 1.35 !important;
+[data-testid="stAlert"] {
+    padding: 0.55rem 0.75rem !important;
+    min-height: 0 !important;
 }
 
+[data-testid="stAlert"] p {
+    font-size: 0.85rem !important;
+    line-height: 1.30 !important;
+    margin: 0 !important;
+}
 
 /* =========================================================
    4. 첫 화면 - 전문가 AHP 조사 표지
