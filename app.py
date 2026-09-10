@@ -425,9 +425,14 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
             if r.get("worst"):
                 st.markdown("**우선 확인할 비교**")
 
-                pair_list = pairs(len(labels))
+                pair_list = pairs(
+                    len(labels)
+                )
 
-                for rank, (a, b) in enumerate(r["worst"], 1):
+                for rank, (a, b) in enumerate(
+                    r["worst"],
+                    1,
+                ):
                     ia = labels.index(a)
                     ib = labels.index(b)
 
@@ -435,7 +440,10 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
                         ia, ib = ib, ia
                         a, b = b, a
 
-                    pair_index = pair_list.index((ia, ib))
+                    pair_index = pair_list.index(
+                        (ia, ib)
+                    )
+
                     value = values[pair_index]
 
                     if value == 1:
@@ -443,14 +451,12 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
 
                     elif value > 0:
                         result_text = (
-                            f"{a.split(' ')[0]}이 "
-                            f"{abs(value)}점 중요"
+                            f"왼쪽 항목이 {abs(value)}점 중요"
                         )
 
                     else:
                         result_text = (
-                            f"{b.split(' ')[0]}가 "
-                            f"{abs(value)}점 중요"
+                            f"오른쪽 항목이 {abs(value)}점 중요"
                         )
 
                     st.markdown(
@@ -458,11 +464,10 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
                         f"**({result_text})**"
                     )
 
-        st.caption(
-            "※ 현재 응답이 본인의 판단을 정확히 반영한 것이라면 "
-            "CR을 낮추기 위해 억지로 수정할 필요는 없습니다."
-        )
-
+                st.caption(
+                    "※ 현재 응답이 본인의 판단을 정확히 반영한 것이라면 "
+                    "CR을 낮추기 위해 억지로 수정할 필요는 없습니다."
+                )
     else:
         st.info(
             r["message"]
