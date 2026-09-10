@@ -874,17 +874,24 @@ elif st.session_state.page == 3:
                 else 1
             )
 
+            # 전략 간 비교일 때 전략 번호 표시
+            if code == "STRAT":
+                left_display = f"전략 {i + 1} {labels[i]}"
+                right_display = f"전략 {j + 1} {labels[j]}"
+            else:
+                left_display = labels[i]
+                right_display = labels[j]
+
             vals.append(
                 ahp_question(
                     f"h_{field}_{code}_{i}_{j}",
-                    labels[i],
-                    labels[j],
+                    left_display,
+                    right_display,
                     qn,
                     len(prs),
                     default_value=default_val,
                 )
             )
-
         # ── 일관성 확인 ───────────────────────────────────
         diag = show_block_diag(
             title,
