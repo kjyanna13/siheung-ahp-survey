@@ -162,7 +162,7 @@ st.markdown(
     font-weight: 400;
     color: #8a9199;
 
-    line-height: 1.4;
+    line-height: 1.0;
 
     margin-top: -0.10 !important;
     margin-bottom: 0.05rem;
