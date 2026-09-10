@@ -91,14 +91,9 @@ def render_reference_pdf():
                     file_name="시흥시_분야별_전략_핵심과제_체계.pdf",
                     mime="application/pdf",
                     width="stretch",
-                )
-
             else:
                 st.caption("PDF 미등록")
-st.markdown(
-    """
-    
-<style>
+
 
 st.markdown(
     """
@@ -719,6 +714,7 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 """,
     unsafe_allow_html=True,
 )
+                    
 DEFAULTS = {
     "page": 1,
     "meta": {},
