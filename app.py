@@ -63,22 +63,22 @@ def render_reference_pdf():
             st.markdown(
                 (
                     '<div style="'
-                    'padding:0.15rem 0;'
                     'margin:0;'
+                    'padding:0.05rem 0;'
                     '">'
                     '<div style="'
                     'font-size:0.95rem;'
                     'font-weight:800;'
                     'color:#163a63;'
-                    'line-height:1.3;'
-                    'margin:0 0 0.22rem 0;'
+                    'line-height:1.25;'
+                    'margin:0 0 0.12rem 0;'
                     '">'
-                    '📄 분야별 전략·핵심과제 체계 참고자료'
+                    '분야별 전략·핵심과제 체계 참고자료'
                     '</div>'
                     '<div style="'
                     'font-size:0.82rem;'
                     'font-weight:400;'
-                    'line-height:1.35;'
+                    'line-height:1.30;'
                     'color:#596273;'
                     'margin:0;'
                     '">'
@@ -95,7 +95,7 @@ def render_reference_pdf():
                 pdf_bytes = REFERENCE_PDF.read_bytes()
 
                 st.download_button(
-                    "📄 PDF 내려받기",
+                    "PDF 내려받기",
                     data=pdf_bytes,
                     file_name="시흥시_분야별_전략_핵심과제_체계.pdf",
                     mime="application/pdf",
@@ -108,34 +108,6 @@ st.markdown(
     """
     
 <style>
-
-/* ─────────────────────────────────────────────
-   참고자료 - 응답안내 스타일과 통일
-───────────────────────────────────────────── */
-
-.reference-card {
-    background: #ffffff;
-    border: 1px solid #d8dee8;
-    border-left: 4px solid #2f67c7;
-    border-radius: 10px;
-
-    padding: 0.70rem 0.85rem;
-    margin-top: 0.65rem;
-    margin-bottom: 0.45rem;
-}
-
-.reference-title {
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: #163a63;
-    margin-bottom: 0.10rem;
-}
-
-.reference-desc {
-    font-size: 0.82rem;
-    line-height: 1.35;
-    color: #596273;
-}
 
 .block-container {
     max-width: 960px;
