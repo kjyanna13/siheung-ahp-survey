@@ -293,6 +293,47 @@ st.markdown(
     margin: 0 !important;
 }
 
+/* 성공 메시지 박스 간격
+   Streamlit 은 markdown 컨테이너에 margin-bottom:-16px 을 걸어 둔다.
+   그대로 두면 박스끼리 겹치므로 먼저 0 으로 되돌린 뒤 원하는 만큼 당긴다. */
+
+[data-testid="stElementContainer"]:has(.success-compact) [data-testid="stMarkdownContainer"] {
+    margin-bottom: 0 !important;
+}
+
+[data-testid="stElementContainer"]:has(.success-compact) {
+    margin-top: -0.30rem !important;
+    margin-bottom: -0.30rem !important;
+}
+
+
+/* 나머지 알림(st.info · st.warning · st.error)도 같은 밀도로 맞춘다.
+   여백은 stAlert 이 아니라 안쪽 stAlertContainer 가 갖고 있으므로
+   stAlert 에 padding 을 줘도 화면은 바뀌지 않는다. */
+
+[data-testid="stAlertContainer"] {
+    padding: 0.50rem 0.80rem !important;
+    border-radius: 8px !important;
+}
+
+/* Streamlit 은 p 에 margin-bottom:16px, 그 부모에 margin-bottom:-16px 을 걸어
+   서로 상쇄시킨다. 한쪽만 0 으로 만들면 글자가 위로 쏠린다. 둘 다 0 으로 맞춘다. */
+
+[data-testid="stAlertContainer"] [data-testid="stMarkdownContainer"],
+[data-testid="stAlertContainer"] [data-testid="stMarkdownContainer"] p {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+[data-testid="stAlertContainer"] p {
+    font-size: 0.85rem !important;
+    line-height: 1.45 !important;
+}
+
+[data-testid="stAlertContainer"] > div {
+    align-items: center !important;
+}
+
 /* =========================================================
    4. 첫 화면 - 전문가 AHP 조사 표지
 ========================================================= */
@@ -1150,7 +1191,10 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
         return r
 
     if r["status"] == "적정":
-        st.success("✓ 비교 응답의 일관성이 적정합니다.")
+        st.markdown(
+            '<div class="success-compact">✓ 비교 응답의 일관성이 적정합니다.</div>',
+            unsafe_allow_html=True,
+        )
 
     elif r["status"] == "재검토":
         cr_text = f"{r['cr']:.3f}" if r.get("cr") is not None else "-"
@@ -1288,7 +1332,10 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
             )
             
         else:
-            st.success("✓ 중요도 판단 방향이 일관됩니다.")
+            st.markdown(
+                '<div class="success-compact">✓ 중요도 판단 방향이 일관됩니다.</div>',
+                unsafe_allow_html=True,
+            )
     else:
         r.setdefault("transitivity", [])
 
