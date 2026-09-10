@@ -842,9 +842,31 @@ elif st.session_state.page == 3:
     ):
         st.write("")
 
-        st.subheader(
-            f"{bi}. {title}"
-        )
+        if code == "STRAT":
+            st.subheader(
+                f"{bi}. 전략 {len(items)}개 간 비교"
+            )
+
+        elif code == "FLAT":
+            st.subheader(
+                f"{bi}. 핵심과제 비교"
+            )
+
+            st.caption(
+                f"핵심과제 {len(items)}개 간 비교"
+            )
+
+        else:
+            # title에서 " — 핵심과제 ○개 간 비교" 제거
+            strategy_name = title.split(" — ")[0]
+
+            st.subheader(
+                f"{bi}. {strategy_name}"
+            )
+
+            st.caption(
+                f"핵심과제 {len(items)}개 간 비교"
+            )
 
         st.caption(
             guide
