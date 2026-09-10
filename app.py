@@ -142,14 +142,14 @@ st.markdown(
 }
 
 .recheck-title {
-    font-size: 0.92rem;
+    font-size: 1rem;
     font-weight: 700;
     margin-top: 0.10rem;
     margin-bottom: 0.08rem;
 }
 
 .recheck-list {
-    font-size: 0.82rem;
+    font-size: 0.92rem;
     font-weight: 400;
     line-height: 1.35;
     margin-top: 0;
