@@ -489,9 +489,9 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
                 )
 
                 trans_lines.append(
-                    f'<div class="trans-item">'
-                    f'<span class="trans-bullet">•</span> '
-                    f'그런데 {a} ≤ {c}'
+                    f'<div class="recheck-item" '
+                    f'style="margin-bottom:0.45rem;">'
+                    f'• <b>그런데 {a} ≤ {c}</b>'
                     f'</div>'
                 )
 
