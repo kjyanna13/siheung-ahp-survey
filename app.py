@@ -402,7 +402,7 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
                 '">'
                 f'<div style="font-size:1rem;font-weight:700;'
                 f'margin-bottom:0.20rem;">'
-                f'{title} · 응답 일관성 확인'
+                f'[일관성 검토] {title}'
                 f'</div>'
                 f'<div style="font-size:0.90rem;font-weight:700;'
                 f'margin-bottom:0.15rem;">'
@@ -470,7 +470,7 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
 
         if viol:
             st.error(
-                f"**판단 방향 재확인 필요 | {len(viol)}건**\n\n"
+                f"**[판단 방향 재확인] {len(viol)}건**\n\n"
                 "항목 간 중요도 판단의 방향이 서로 맞지 않습니다. "
                 "아래 비교를 다시 확인해 주세요."
             )
@@ -501,7 +501,7 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
 
             st.markdown(
                 '<div class="recheck-wrap">'
-                '<div class="recheck-title">판단 방향 재확인</div>'
+                '<div class="recheck-title">확인할 비교</div>'
                 '<div class="recheck-list">'
                 + ''.join(trans_lines)
                 + '</div>'
@@ -567,7 +567,9 @@ if st.session_state.page == 1:
 
 **[쌍대비교 방법]** 제시된 두 항목 중 어느 항목이 더 중요한지 판단하고, 얼마나 더 중요한지를 선택해 주십시오.
 
-**[일관성 검토]** 일관성비율(CR)이 0.10을 초과하면 화면에서 재검토 문항을 안내합니다.
+**[일관성 검토]** 일관성비율(CR)이 0.10을 초과하면 중요도 차이(3.5.7.9)를 적절하게 선택했는지 다시 확인해 주십시오. 본인의 판단이 맞다면 수정하지 않아도 됩니다.
+
+**[판단 방향 재확인]** 항목 간 중요도 판단의 방향이 일관되는지 확인합니다. 예를 들어 A > B, B > C로 판단했다면 A > C가 되는지 확인해 주십시오. 판단 방향에 모순이 있는 경우에는 안내된 비교를 다시 확인하고 수정한 후 진행해 주십시오.
 
 **[응답 소요시간]** 약 **25~35분**
 """
