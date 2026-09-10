@@ -7,7 +7,6 @@
 분야·전략·과제 수는 hierdata/taskdata에서 읽는다. 계획이 바뀌면 두 파일만 교체하면 된다.
 """
 
-import base64
 import json
 import uuid
 from pathlib import Path
@@ -41,68 +40,44 @@ N_STRAT = sum(len(STRAT[f]) for f in FIELDS)
 
 
 # ─────────────────────────────────────────────────────────────
-# 참고자료 PDF
+# 전문가 AHP 참고자료 PDF
 # ─────────────────────────────────────────────────────────────
 
-REFERENCE_PDF = Path(
-    "assets/시흥시_분야별_전략_핵심과제_체계.pdf"
+REFERENCE_PDF = (
+    Path(__file__).resolve().parent
+    / "assets"
+    / "시흥시_분야별_전략_핵심과제_체계.pdf"
 )
 
 
 def render_reference_pdf():
-    """분야별 전략·핵심과제 참고자료 보기/다운로드."""
+    """첫 화면에서 분야별 전략·핵심과제 참고자료를 제공합니다."""
 
-    st.markdown("**참고자료**")
-
-    st.caption(
-        "전체 분야의 전략·핵심과제 체계는 참고자료에서 확인할 수 있습니다. "
-        "실제 평가는 선택한 소관 분야를 기준으로 진행됩니다."
-    )
-
-    if not REFERENCE_PDF.exists():
-        st.info(
-            "참고자료 PDF가 아직 등록되지 않았습니다. "
-            "프로젝트의 assets 폴더에 "
-            "'시흥시_분야별_전략_핵심과제_체계.pdf' 파일을 추가해 주세요."
-        )
-        return
-
-    pdf_bytes = REFERENCE_PDF.read_bytes()
-    pdf_b64 = base64.b64encode(
-        pdf_bytes
-    ).decode("utf-8")
-
-    c1, c2 = st.columns(2)
-
-    with c1:
-        st.markdown(
-            (
-                '<a href="data:application/pdf;base64,'
-                + pdf_b64
-                + '" target="_blank" '
-                'style="display:block;'
-                'text-align:center;'
-                'padding:0.55rem 0.8rem;'
-                'border:1px solid #d0d7e2;'
-                'border-radius:8px;'
-                'text-decoration:none;'
-                'font-weight:600;'
-                'color:#1f2937;'
-                'background:#ffffff;">'
-                '참고자료 새 창에서 보기'
-                '</a>'
-            ),
-            unsafe_allow_html=True,
+    with st.expander(
+        "분야별 전략·핵심과제 체계 참고자료 (PDF)",
+        expanded=False,
+    ):
+        st.caption(
+            "6개 분야의 목표·전략·핵심과제 전체 체계를 정리한 참고자료입니다. "
+            "소관 분야의 평가구조를 확인할 때 활용해 주십시오."
         )
 
-    with c2:
-        st.download_button(
-            "참고자료 PDF 내려받기",
-            data=pdf_bytes,
-            file_name="시흥시_분야별_전략_핵심과제_체계.pdf",
-            mime="application/pdf",
-            width="stretch",
-        )
+        if REFERENCE_PDF.exists():
+            pdf_bytes = REFERENCE_PDF.read_bytes()
+
+            st.download_button(
+                "참고자료 PDF 내려받기",
+                data=pdf_bytes,
+                file_name="시흥시_분야별_전략_핵심과제_체계.pdf",
+                mime="application/pdf",
+                width="stretch",
+            )
+        else:
+            st.info(
+                "참고자료 PDF가 등록되지 않았습니다. "
+                "프로젝트의 assets 폴더에 "
+                "'시흥시_분야별_전략_핵심과제_체계.pdf' 파일을 추가해 주세요."
+            )
 
 st.markdown(
     """
@@ -274,6 +249,161 @@ st.markdown(
 .trans-bullet {
     font-weight: 600;
     color: #6b7280;
+}
+
+
+
+/* ─────────────────────────────────────────────
+   첫 화면 - 전문가 AHP 조사 표지
+───────────────────────────────────────────── */
+.cover-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #163a63;
+    line-height: 1.35;
+    margin-bottom: 0.35rem;
+}
+
+.cover-intro {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: #374151;
+    margin-bottom: 0.9rem;
+}
+
+.cover-box {
+    border: 1px solid #d8dee8;
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    margin-top: 0.7rem;
+    margin-bottom: 1rem;
+    background: #ffffff;
+}
+
+.cover-box-title {
+    font-size: 1.08rem;
+    font-weight: 800;
+    color: #163a63;
+    margin-bottom: 0.6rem;
+}
+
+.cover-step {
+    display: grid;
+    grid-template-columns: 2.6rem 3rem 1fr 7.2rem;
+    align-items: center;
+    column-gap: 0.65rem;
+    padding: 0.7rem 0.15rem;
+    border-bottom: 1px solid #e8edf3;
+}
+
+.cover-step:last-of-type {
+    border-bottom: none;
+}
+
+.cover-no {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2f67c7;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.cover-icon {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef4ff;
+    font-size: 1.25rem;
+}
+
+.cover-step-name {
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 0.08rem;
+}
+
+.cover-step-desc {
+    font-size: 0.84rem;
+    color: #596273;
+    line-height: 1.35;
+}
+
+.cover-badge {
+    text-align: center;
+    padding: 0.48rem 0.5rem;
+    border-radius: 10px;
+    background: #eef4ff;
+    color: #2456a6;
+    font-size: 0.82rem;
+    font-weight: 800;
+    line-height: 1.25;
+}
+
+.cover-help {
+    background: #f3f6fa;
+    border-radius: 10px;
+    padding: 0.62rem 0.75rem;
+    margin-top: 0.65rem;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: #374151;
+}
+
+.cover-check-yellow {
+    background: #fff7d6;
+    border-radius: 10px;
+    padding: 0.62rem 0.75rem;
+    margin-top: 0.45rem;
+    font-size: 0.84rem;
+    line-height: 1.4;
+    color: #8a6500;
+}
+
+.cover-check-red {
+    background: #fde7e7;
+    border-radius: 10px;
+    padding: 0.62rem 0.75rem;
+    margin-top: 0.45rem;
+    font-size: 0.84rem;
+    line-height: 1.4;
+    color: #b42318;
+}
+
+.cover-time {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #374151;
+    margin-top: 0.55rem;
+}
+
+.cover-section-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #163a63;
+    margin-top: 0.35rem;
+    margin-bottom: 0.45rem;
+}
+
+@media (max-width: 700px) {
+    .cover-step {
+        grid-template-columns: 2.4rem 2.7rem 1fr;
+        row-gap: 0.35rem;
+    }
+
+    .cover-badge {
+        grid-column: 3;
+        justify-self: start;
+        width: fit-content;
+    }
 }
 
 [data-testid="stVerticalBlockBorderWrapper"] {
@@ -620,32 +750,87 @@ st.progress(
 
 
 if st.session_state.page == 1:
-    st.header("응답자 정보")
-
-    st.write(
-        f"본 조사는 「시흥시 균형발전 기본계획」의 {len(TASKS)}개 핵심과제 가운데 "
-        "계획기간 중 우선 추진할 13개 과제를 선정하기 위한 근거를 마련하는 조사입니다."
+    st.markdown(
+        '<div class="cover-title">핵심과제 우선순위 선정을 위한 전문가 AHP 조사</div>',
+        unsafe_allow_html=True,
     )
 
-    with st.container(border=True):
-        st.markdown("**응답 안내**")
-        st.markdown(
-            f"""
-- **1. 평가기준 중요도:** 평가기준의 상대적 중요도를 **쌍대비교** 방식으로 평가합니다. *(총 {len(CRIT_PAIRS)}문항)*
-- **2. 전략·핵심과제 중요도:** 분야별 전략 및 핵심과제의 상대적 중요도를 **쌍대비교** 방식으로 평가합니다.
-- **3. 실행가능성·파급효과 평가:** 핵심과제의 실행 가능성과 파급 효과를 **5점 척도**로 평가합니다.
+    st.markdown(
+        (
+            '<div class="cover-intro">'
+            f'본 조사는 「시흥시 균형발전 기본계획」의 <b>{len(TASKS)}개 핵심과제</b> 가운데 '
+            '계획기간 중 우선 추진할 <b>13개 과제</b>를 선정하기 위해 '
+            '전문가의 판단을 바탕으로 과제별 우선순위를 도출하는 조사입니다.'
+            '</div>'
+        ),
+        unsafe_allow_html=True,
+    )
 
-**[쌍대비교 방법]** 제시된 두 항목 중 어느 항목이 더 중요한지 판단하고, 얼마나 더 중요한지를 선택해 주십시오.
+    st.markdown(
+        (
+            '<div class="cover-box">'
+            '<div class="cover-box-title">응답 안내</div>'
 
-**[일관성 검토]** 일관성비율(CR)이 0.10을 초과하면 중요도 차이(3.5.7.9)를 적절하게 선택했는지 다시 확인해 주십시오. 본인의 판단이 맞다면 수정하지 않아도 됩니다.
+            '<div class="cover-step">'
+            '<div class="cover-no">1</div>'
+            '<div class="cover-icon">⚖️</div>'
+            '<div>'
+            '<div class="cover-step-name">평가기준 중요도</div>'
+            '<div class="cover-step-desc">평가기준 간 상대적 중요도를 쌍대비교 방식으로 평가합니다.</div>'
+            '</div>'
+            f'<div class="cover-badge">쌍대비교<br>총 {len(CRIT_PAIRS)}문항</div>'
+            '</div>'
 
-**[판단 방향 재확인]** 항목 간 중요도 판단의 방향이 일관되는지 확인합니다. 예를 들어 A > B, B > C로 판단했다면 A > C가 되는지 확인해 주십시오. 판단 방향에 모순이 있는 경우에는 안내된 비교를 다시 확인하고 수정한 후 진행해 주십시오.
+            '<div class="cover-step">'
+            '<div class="cover-no">2</div>'
+            '<div class="cover-icon">📋</div>'
+            '<div>'
+            '<div class="cover-step-name">전략·핵심과제 중요도</div>'
+            '<div class="cover-step-desc">분야별 전략 및 핵심과제의 상대적 중요도를 쌍대비교 방식으로 평가합니다.</div>'
+            '</div>'
+            '<div class="cover-badge">쌍대비교</div>'
+            '</div>'
 
-**[응답 소요시간]** 약 **25~35분**
-"""
-        )
+            '<div class="cover-step">'
+            '<div class="cover-no">3</div>'
+            '<div class="cover-icon">📊</div>'
+            '<div>'
+            '<div class="cover-step-name">실행가능성·파급효과</div>'
+            '<div class="cover-step-desc">핵심과제별 실행 가능성과 파급·연계 효과를 5점 척도로 평가합니다.</div>'
+            '</div>'
+            '<div class="cover-badge">5점 척도</div>'
+            '</div>'
+
+            '<div class="cover-help">'
+            '<b>[쌍대비교 방법]</b> 제시된 두 항목 중 <b>어느 항목이 더 중요한지</b> 판단하고, '
+            '그 차이를 <b>1·3·5·7·9 척도</b>로 선택해 주십시오. '
+            '두 항목의 중요도가 비슷하면 <b>동등(1)</b>을 선택합니다.'
+            '</div>'
+
+            '<div class="cover-check-yellow">'
+            '<b>[일관성 검토]</b> 일관성비율(CR)이 <b>0.10을 초과</b>하면 '
+            '<b>중요도 차이(3·5·7·9)</b>가 본인의 판단을 적절히 반영하는지 다시 확인해 주십시오. '
+            '현재 응답이 본인의 판단과 일치한다면 수정하지 않아도 됩니다.'
+            '</div>'
+
+            '<div class="cover-check-red">'
+            '<b>[판단 방향 재확인]</b> 항목 간 중요도 판단의 방향이 일관되는지 확인합니다. '
+            '예를 들어 <b>A &gt; B, B &gt; C라면 A &gt; C인지</b> 확인해 주십시오. '
+            '판단 방향에 모순이 있는 경우에는 안내된 비교를 수정한 후 진행해 주십시오.'
+            '</div>'
+
+            '<div class="cover-time">응답 소요시간　약 25~35분</div>'
+            '</div>'
+        ),
+        unsafe_allow_html=True,
+    )
 
     render_reference_pdf()
+
+    st.markdown(
+        '<div class="cover-section-title">응답자 정보</div>',
+        unsafe_allow_html=True,
+    )
 
     c1, c2 = st.columns(2)
 
