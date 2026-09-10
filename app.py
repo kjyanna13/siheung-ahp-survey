@@ -91,6 +91,8 @@ def render_reference_pdf():
                     file_name="시흥시_분야별_전략_핵심과제_체계.pdf",
                     mime="application/pdf",
                     width="stretch",
+                )
+
             else:
                 st.caption("PDF 미등록")
 
@@ -710,6 +712,107 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
     }
 }
 
+
+/* =========================================================
+   8. 페이지 공통 시작부
+   첫 화면의 제목·설명·안내 카드와 시각적 위계를 통일
+========================================================= */
+
+.page-head {
+    margin-top: 0.05rem;
+    margin-bottom: 0.80rem;
+}
+
+.page-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #163a63;
+    line-height: 1.35;
+    margin: 0 0 0.28rem 0;
+}
+
+.page-desc {
+    font-size: 0.90rem;
+    font-weight: 400;
+    color: #4b5563;
+    line-height: 1.50;
+    margin: 0;
+}
+
+.page-meta {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #7b8491;
+    line-height: 1.35;
+    margin-top: 0.22rem;
+}
+
+.page-info-card {
+    background: #eef4ff;
+    border-radius: 10px;
+    padding: 0.62rem 0.75rem;
+    margin-top: 0.55rem;
+    margin-bottom: 0.55rem;
+    font-size: 0.85rem;
+    line-height: 1.40;
+    color: #2456a6;
+}
+
+.page-guide-card {
+    background: #fff9db;
+    border-radius: 10px;
+    padding: 0.62rem 0.75rem;
+    margin-top: 0.55rem;
+    margin-bottom: 0.65rem;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: #8a6500;
+}
+
+.page-scale-card {
+    background: #eef4ff;
+    border-radius: 10px;
+    padding: 0.62rem 0.75rem;
+    margin-top: 0.45rem;
+    margin-bottom: 0.65rem;
+    font-size: 0.84rem;
+    line-height: 1.45;
+    color: #2456a6;
+}
+
+.page-section-card {
+    border: 1px solid #d8dee8;
+    border-radius: 10px;
+    padding: 0.70rem 0.80rem;
+    margin-top: 0.45rem;
+    margin-bottom: 0.65rem;
+    background: #ffffff;
+}
+
+.page-section-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #163a63;
+    margin-bottom: 0.20rem;
+}
+
+.page-section-text {
+    font-size: 0.84rem;
+    line-height: 1.45;
+    color: #4b5563;
+    margin: 0;
+}
+
+@media (max-width: 700px) {
+    .page-title {
+        font-size: 1.22rem;
+    }
+
+    .page-desc {
+        font-size: 0.86rem;
+    }
+}
+
 </style>
 """,
     unsafe_allow_html=True,
@@ -1245,25 +1348,34 @@ if st.session_state.page == 1:
 
 
 elif st.session_state.page == 2:
-    st.header(
-        f"평가기준 간 상대적 중요도 ({len(CRIT_PAIRS)}문항)"
-    )
-
-    st.write(
-        "지역균형발전 핵심과제의 우선순위를 판단할 때, "
-        "**각 평가기준을 어느 정도 중요하게 고려해야 하는지** 평가해 주십시오."
+    st.markdown(
+        (
+            '<div class="page-head">'
+            f'<div class="page-title">평가기준 간 상대적 중요도 ({len(CRIT_PAIRS)}문항)</div>'
+            '<div class="page-desc">'
+            '지역균형발전 핵심과제의 우선순위를 판단할 때, '
+            '<b>각 평가기준을 어느 정도 중요하게 고려해야 하는지</b> 평가해 주십시오.'
+            '</div>'
+            '</div>'
+        ),
+        unsafe_allow_html=True,
     )
 
     with st.expander("평가기준 4개 보기", expanded=True):
         for code, name, question, _src in CRIT:
             st.markdown(f"**{code} {name}** — {question}")
 
-    st.info(
-        "평가방법 : 두 기준을 비교하여 **어느 기준이 더 중요한지**와 "
-        "**그 중요도의 정도**를 선택해 주십시오. "
-        "두 기준이 비슷하게 중요하면 **'동등(1)'**을 선택합니다.\n\n"
-        "**척도 :** 1 동등 · 3 약간 더 중요 · 5 뚜렷하게 더 중요 · "
-        "7 매우 더 중요 · 9 절대적으로 더 중요"
+    st.markdown(
+        (
+            '<div class="page-scale-card">'
+            '<b>평가방법</b>　두 기준을 비교하여 '
+            '<b>어느 기준이 더 중요한지</b>와 <b>그 중요도의 정도</b>를 선택해 주십시오. '
+            '두 기준이 비슷하게 중요하면 <b>동등(1)</b>을 선택합니다.<br>'
+            '<b>척도</b>　1 동등 · 3 약간 더 중요 · 5 뚜렷하게 더 중요 · '
+            '7 매우 더 중요 · 9 절대적으로 더 중요'
+            '</div>'
+        ),
+        unsafe_allow_html=True,
     )
 
     labels = [
@@ -1352,12 +1464,24 @@ elif st.session_state.page == 3:
     nb, nq = block_stats(field)
     field_blocks = list(blocks(field))
 
-    st.header(f"{field} 분야 전략·핵심과제 중요도")
-    st.caption(f"{nb}개 비교블록 · {nq}문항")
+    st.markdown(
+        (
+            '<div class="page-head">'
+            f'<div class="page-title">{field} 분야 전략·핵심과제 중요도</div>'
+            f'<div class="page-meta">{nb}개 비교블록 · {nq}문항</div>'
+            '</div>'
+        ),
+        unsafe_allow_html=True,
+    )
 
-    st.info(
-        f"**분야 목표**  \n"
-        f"{FIELD_GOAL[field]}"
+    st.markdown(
+        (
+            '<div class="page-info-card">'
+            '<b>분야 목표</b><br>'
+            f'{FIELD_GOAL[field]}'
+            '</div>'
+        ),
+        unsafe_allow_html=True,
     )
 
     with st.expander(
@@ -1403,20 +1527,31 @@ elif st.session_state.page == 3:
 
             st.markdown("\n".join(task_lines))
 
-    st.warning(
-        "**평가방법**  \n\n"
-        "제시된 두 항목 중 **균형발전 목표 달성에 더 중요한 항목**을 먼저 판단하고, "
-        "그 중요도의 정도를 선택해 주십시오. "
-        "두 항목이 비슷하게 중요하다고 판단되면 **동등(1)**을 선택해 주십시오.  \n\n"
-        "※ 이 단계에서는 **상대적 중요도만 평가**합니다. "
-        "실행 가능성과 파급·연계 효과는 다음 단계에서 별도로 평가합니다."
+    st.markdown(
+        (
+            '<div class="page-guide-card">'
+            '<b>평가방법</b><br>'
+            '제시된 두 항목 중 <b>균형발전 목표 달성에 더 중요한 항목</b>을 먼저 판단하고, '
+            '그 중요도의 정도를 선택해 주십시오. '
+            '두 항목이 비슷하게 중요하다고 판단되면 <b>동등(1)</b>을 선택해 주십시오.<br>'
+            '<span style="font-size:0.80rem;">'
+            '※ 이 단계에서는 <b>상대적 중요도만 평가</b>합니다. '
+            '실행 가능성과 파급·연계 효과는 다음 단계에서 별도로 평가합니다.'
+            '</span>'
+            '</div>'
+        ),
+        unsafe_allow_html=True,
     )
 
     if field in FLAT:
-        st.info(
-            "이 분야는 전략 수와 핵심과제 수를 고려하여 "
-            "전략 단계를 별도로 비교하지 않고 "
-            "분야 내 핵심과제를 직접 비교합니다."
+        st.markdown(
+            (
+                '<div class="page-info-card">'
+                '이 분야는 전략 수와 핵심과제 수를 고려하여 전략 단계를 별도로 비교하지 않고 '
+                '분야 내 핵심과제를 직접 비교합니다.'
+                '</div>'
+            ),
+            unsafe_allow_html=True,
         )
 
     saved_hier = st.session_state.get("hier", {})
@@ -1566,24 +1701,39 @@ elif st.session_state.page == 4:
     field = rtype()
     codes = tasks_of(field)
 
-    st.header(
-        f"{field} 핵심과제 실행가능성·파급효과 평가"
+    st.markdown(
+        (
+            '<div class="page-head">'
+            f'<div class="page-title">{field} 분야 핵심과제 실행가능성·파급효과 평가</div>'
+            '<div class="page-desc">'
+            '각 핵심과제의 <b>실행 가능성</b>과 <b>파급·연계 효과</b>를 '
+            '각각 5점 척도로 평가해 주십시오.'
+            '</div>'
+            '</div>'
+        ),
+        unsafe_allow_html=True,
     )
 
-    st.write(
-        "각 핵심과제의 **실행 가능성**과 **파급·연계 효과**를 "
-        "각각 5점 척도로 평가해 주십시오."
+    st.markdown(
+        (
+            '<div class="page-section-card">'
+            '<div class="page-section-title">평가기준</div>'
+            '<div class="page-section-text">'
+            '<b>• 실행 가능성</b> — 예산·인력·부지·제도 여건을 고려할 때 '
+            '계획기간(5년) 내 착수 가능한 정도<br>'
+            '<span style="color:#6b7280;">'
+            '　1 매우 낮음 · 2 낮음 · 3 보통 · 4 높음 · 5 매우 높음'
+            '</span><br><br>'
+            '<b>• 파급·연계 효과</b> — 사업 성과가 다른 분야 또는 다른 생활권으로 '
+            '확산되는 정도<br>'
+            '<span style="color:#6b7280;">'
+            '　1 매우 낮음 · 2 낮음 · 3 보통 · 4 높음 · 5 매우 높음'
+            '</span>'
+            '</div>'
+            '</div>'
+        ),
+        unsafe_allow_html=True,
     )
-
-    with st.container(border=True):
-        st.markdown(
-            """
-- **실행 가능성** — 예산·인력·부지·제도 여건을 고려할 때 계획기간(5년) 내 착수 가능한 정도  
-  1 매우 낮음 · 2 낮음 · 3 보통 · 4 높음 · 5 매우 높음
-- **파급·연계 효과** — 사업 성과가 다른 분야 또는 다른 생활권으로 확산되는 정도  
-  1 매우 낮음 · 2 낮음 · 3 보통 · 4 높음 · 5 매우 높음
-"""
-        )
 
     saved_ratings = st.session_state.get("ratings", {})
     ratings = {}
@@ -1696,13 +1846,28 @@ elif st.session_state.page == 4:
 elif st.session_state.page == 5:
     meta = st.session_state.meta
 
-    st.header("응답 검토 및 제출")
+    st.markdown(
+        (
+            '<div class="page-head">'
+            '<div class="page-title">응답 검토 및 제출</div>'
+            '<div class="page-desc">'
+            '입력한 응답과 일관성 검토 결과를 확인한 후 최종 제출해 주십시오.'
+            '</div>'
+            '</div>'
+        ),
+        unsafe_allow_html=True,
+    )
 
-    st.write(
-        f"**{meta.get('name', '')}** · "
-        f"{meta.get('org', '')} · "
-        f"{meta.get('field', '')} · "
-        f"경력 {meta.get('career', '')}"
+    st.markdown(
+        (
+            '<div class="page-info-card">'
+            f'<b>{meta.get("name", "")}</b> · '
+            f'{meta.get("org", "")} · '
+            f'{meta.get("field", "")} · '
+            f'경력 {meta.get("career", "")}'
+            '</div>'
+        ),
+        unsafe_allow_html=True,
     )
 
     criteria_diag = st.session_state.crit_diag or {}
