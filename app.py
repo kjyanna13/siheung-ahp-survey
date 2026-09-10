@@ -465,21 +465,21 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
             for a, b, c in viol:
                 trans_lines.append(
                     f'<div class="trans-item">'
-                    f'<span class="trans-bullet">·</span> '
+                    f'<span class="trans-bullet">•</span> '
                     f'{a} &gt; {b}'
                     f'</div>'
                 )
 
                 trans_lines.append(
                     f'<div class="trans-item">'
-                    f'<span class="trans-bullet">·</span> '
+                    f'<span class="trans-bullet">•</span> '
                     f'{b} &gt; {c}'
                     f'</div>'
                 )
 
                 trans_lines.append(
                     f'<div class="trans-item">'
-                    f'<span class="trans-bullet">·</span> '
+                    f'<span class="trans-bullet">•</span> '
                     f'그런데 {a} ≤ {c}'
                     f'</div>'
                 )
@@ -499,7 +499,7 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
                 'color:#d32f2f;'
                 'font-size:0.88rem;'
                 'font-weight:700;'
-                'margin-top:0.35rem;'
+                'margin-top:0.25rem;'
                 'margin-left:1rem;'
                 'margin-bottom:0.3rem;'
                 '">'
@@ -754,8 +754,7 @@ elif st.session_state.page == 2:
     st.write("")
 
     st.caption(
-        "※ 일관성비율(CR)이 0.10을 초과한 경우 중요도 차이의 재확인을 권장합니다. "
-        "판단 방향이 서로 맞지 않는 경우에는 해당 비교를 수정해야 다음 단계로 진행할 수 있습니다."
+        "※ 일관성비율(CR)이 0.10을 초과한 경우에는 중요도 차이를 다시 확인해 주십시오."
     )
 
     st.write("")
@@ -998,11 +997,6 @@ elif st.session_state.page == 3:
                 type="primary",
                 width="stretch",
                 disabled=True,
-            )
-
-            st.error(
-                "판단 방향이 서로 맞지 않는 비교가 있습니다. "
-                "위에 안내된 비교를 수정한 후 다음 단계로 진행해 주세요."
             )
         else:
             if st.button(
