@@ -727,31 +727,128 @@ elif st.session_state.page == 3:
 
     field = rtype()
     nb, nq = block_stats(field)
-    st.header(f"{field} 전략·핵심과제 중요도")
-    st.caption(f"{nb}개 비교블록 · {nq}문항 · 분야 목표 「{FIELD_GOAL[field]}」")
+    field_blocks = list(blocks(field))
+
+    # ── 제목 ──────────────────────────────────────────────
+    st.header(f"{field} 분야 전략·핵심과제 중요도")
+
+    st.caption(
+        f"{nb}개 비교블록 · {nq}문항"
+    )
+
+    # ── 분야 목표 ─────────────────────────────────────────
+    st.info(
+        f"**분야 목표**  \n"
+        f"{FIELD_GOAL[field]}"
+    )
+
+    # ── 평가대상 전체 구조 ────────────────────────────────
+    with st.expander(
+        f"{field} 분야 전략·핵심과제 전체 보기",
+        expanded=True,
+    ):
+        st.caption(
+            "평가에 앞서 해당 분야의 전략과 핵심과제 전체 구성을 확인해 주십시오."
+        )
+
+        # 일반 계층형 분야
+        if field not in FLAT:
+            for si, (strat_code, strat_name, task_codes) in enumerate(
+                STRAT[field],
+                1,
+            ):
+                st.markdown(
+                    f"**전략 {si}. {strat_name}**"
+                )
+
+                for task_code in task_codes:
+                    task_name = TASKS[task_code][1]
+
+                    st.markdown(
+                        f"- **{task_code}** {task_name}"
+                    )
+
+                st.write("")
+
+        # 평면화 분야
+        else:
+            st.markdown(
+                "**평가대상 핵심과제**"
+            )
+
+            for strat_code, strat_name, task_codes in STRAT[field]:
+                for task_code in task_codes:
+                    task_name = TASKS[task_code][1]
+
+                    st.markdown(
+                        f"- **{task_code}** {task_name}"
+                    )
+
+    # ── 평가방법 ──────────────────────────────────────────
     st.warning(
-        "이 단계에서는 **균형발전 목표 달성에 대한 상대적 중요도**를 기준으로 비교해 주십시오. "
+        "**평가방법**  \n\n"
+        "제시된 두 항목 중 **균형발전 목표 달성에 더 중요한 항목**을 먼저 판단하고, "
+        "그 중요도의 정도를 선택해 주십시오. "
+        "두 항목이 비슷하게 중요하다고 판단되면 **동등(1)**을 선택해 주십시오.  \n\n"
+        "※ 이 단계에서는 **상대적 중요도만 평가**합니다. "
         "실행 가능성과 파급·연계 효과는 다음 단계에서 별도로 평가합니다."
     )
 
+    # ── 평면화 분야 안내 ───────────────────────────────────
     if field in FLAT:
         st.info(
-            "이 분야는 전략 수와 과제 수가 적어 전략층을 두지 않고 "
-            "분야 내 과제를 한 블록에서 비교합니다."
+            "이 분야는 전략 수와 핵심과제 수를 고려하여 "
+            "전략 단계를 별도로 비교하지 않고 "
+            "분야 내 핵심과제를 직접 비교합니다."
         )
 
-    saved_hier = st.session_state.get("hier", {})
+    # ── 기존 응답 불러오기 ────────────────────────────────
+    saved_hier = st.session_state.get(
+        "hier",
+        {},
+    )
+
     hier = {}
 
-    for bi, (code, title, guide, items, labels) in enumerate(blocks(field), 1):
-        st.subheader(f"{bi}. {title}")
-        st.caption(guide)
-        prs = pairs(len(items))
-        saved_vals = saved_hier.get(code, {}).get("values", [])
+    # ── 실제 쌍대비교 ─────────────────────────────────────
+    for bi, (code, title, guide, items, labels) in enumerate(
+        field_blocks,
+        1,
+    ):
+        st.write("")
+
+        st.subheader(
+            f"{bi}. {title}"
+        )
+
+        st.caption(
+            guide
+        )
+
+        prs = pairs(
+            len(items)
+        )
+
+        saved_vals = saved_hier.get(
+            code,
+            {},
+        ).get(
+            "values",
+            [],
+        )
+
         vals = []
 
-        for qn, (i, j) in enumerate(prs, 1):
-            default_val = saved_vals[qn-1] if qn-1 < len(saved_vals) else 1
+        for qn, (i, j) in enumerate(
+            prs,
+            1,
+        ):
+            default_val = (
+                saved_vals[qn - 1]
+                if qn - 1 < len(saved_vals)
+                else 1
+            )
+
             vals.append(
                 ahp_question(
                     f"h_{field}_{code}_{i}_{j}",
@@ -763,7 +860,13 @@ elif st.session_state.page == 3:
                 )
             )
 
-        diag = show_block_diag(title, vals, labels)
+        # ── 일관성 확인 ───────────────────────────────────
+        diag = show_block_diag(
+            title,
+            vals,
+            labels,
+        )
+
         hier[code] = {
             "title": title,
             "items": items,
@@ -772,13 +875,21 @@ elif st.session_state.page == 3:
             "diag": diag,
         }
 
-
+    # ── 응답 저장 ─────────────────────────────────────────
     st.session_state.hier = hier
 
+    # ── 이전 / 다음 ───────────────────────────────────────
+    st.write("")
+
     c1, c2 = st.columns(2)
+
     with c1:
-        if st.button("← 이전", width="stretch"):
+        if st.button(
+            "← 이전",
+            width="stretch",
+        ):
             go(2)
+
     with c2:
         if st.button(
             "다음 : 실행가능성·파급효과 평가 →",
