@@ -524,70 +524,55 @@ st.markdown(
    5. 분야별 전략·핵심과제 참고자료
 ========================================================= */
 
-/*
-reference-anchor가 들어 있는 Streamlit container만
-참고자료 전용 박스로 변경
-*/
-
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
-    background: #f8fbff !important;
+    background: #eef4ff !important;
 
     border: 1px solid #9fc0ea !important;
     border-left: 5px solid #2f67c7 !important;
 
     border-radius: 10px !important;
 
-    padding-top: 0.20rem !important;
-    padding-bottom: 0.30rem !important;
-    padding-left: 0.80rem !important;
-    padding-right: 0.80rem !important;
+    padding: 0.55rem 0.80rem !important;
 
     margin-top: 0.40rem !important;
     margin-bottom: 0.55rem !important;
 }
 
+
+/* 숨김 anchor */
+
 .reference-anchor {
     display: none !important;
 }
 
-.reference-content {
-    margin: 0 !important;
-    padding: 0 !important;
-}
 
-.reference-title {
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: #163a63;
-    line-height: 1.20;
-
-    margin-top: 0 !important;
-    margin-bottom: 0.10rem !important;
-    padding: 0 !important;
-}
-
-.reference-desc {
-    font-size: 0.82rem;
-    font-weight: 400;
-    color: #596273;
-    line-height: 1.25;
-
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* 내부 세로 블록 간격 축소 */
+/* 컨테이너 내부 세로 간격 제거 */
 
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 [data-testid="stVerticalBlock"] {
-    gap: 0.15rem !important;
+    gap: 0 !important;
 }
+
+
+/* anchor가 차지하는 첫 번째 블록 위로 당김 */
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
+[data-testid="stVerticalBlock"] > div:first-child {
+    margin-top: -0.45rem !important;
+    margin-bottom: 0 !important;
+}
+
+
+/* 실제 내용이 들어 있는 가로 행 위로 당김 */
 
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 [data-testid="stHorizontalBlock"] {
+    margin-top: -0.30rem !important;
+    margin-bottom: 0 !important;
     align-items: center !important;
     gap: 0.65rem !important;
 }
+
 
 /* Markdown 기본 여백 제거 */
 
@@ -603,7 +588,38 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
     padding: 0 !important;
 }
 
-/* 다운로드 버튼 */
+
+/* 참고자료 왼쪽 텍스트 */
+
+.reference-content {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.reference-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #163a63;
+
+    line-height: 1.25;
+
+    margin: 0 0 0.10rem 0 !important;
+    padding: 0 !important;
+}
+
+.reference-desc {
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: #596273;
+
+    line-height: 1.30;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+/* 참고자료 다운로드 버튼 */
 
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 [data-testid="stDownloadButton"] {
@@ -628,7 +644,7 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 [data-testid="stDownloadButton"] button:hover {
     border-color: #2f67c7 !important;
-    background: #eef4ff !important;
+    background: #f8fbff !important;
     color: #174ea6 !important;
 }
 
