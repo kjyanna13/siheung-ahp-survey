@@ -131,6 +131,10 @@ st.markdown(
     font-weight: 600;
 }
 
+/* ─────────────────────────────────────────────
+   일관성 재확인 목록 공통
+───────────────────────────────────────────── */
+
 .recheck-wrap {
     margin-left: 1rem;
     margin-top: 0.2rem;
@@ -141,21 +145,28 @@ st.markdown(
     font-size: 0.92rem;
     font-weight: 700;
     margin-top: 0.10rem;
-    margin-bottom: 0.10rem;
+    margin-bottom: 0.08rem;
 }
 
 .recheck-list {
-    font-size: 0.80rem
+    font-size: 0.82rem;
+    font-weight: 400;
     line-height: 1.35;
     margin-top: 0;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.10rem;
 }
 
 .recheck-item {
+    font-size: inherit;
+    font-weight: 400;
+    line-height: inherit;
     margin: 0;
     padding: 0;
 }
 
+.recheck-item b {
+    font-weight: 600;
+}
 
 /* ─────────────────────────────────────────────
    판단 방향 재확인 목록
@@ -485,9 +496,9 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
                 )
 
             st.markdown(
-                '<div class="trans-wrap">'
-                '<div class="trans-title">판단 방향 재확인</div>'
-                '<div class="trans-list">'
+                '<div class="recheck-wrap">'
+                '<div class="recheck-title">판단 방향 재확인</div>'
+                '<div class="recheck-list">'
                 + ''.join(trans_lines)
                 + '</div>'
                 '</div>',
@@ -497,7 +508,7 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
             st.markdown(
                 '<div style="'
                 'color:#d32f2f;'
-                'font-size:0.88rem;'
+                'font-size:0.98rem;'
                 'font-weight:700;'
                 'margin-top:0.25rem;'
                 'margin-left:1rem;'
