@@ -765,7 +765,7 @@ elif st.session_state.page == 3:
                     task_name = TASKS[task_code][1]
 
                     st.markdown(
-                        f"- **{task_code}** {task_name}"
+                        f"- {task_name}"
                     )
 
                 st.write("")
@@ -781,7 +781,7 @@ elif st.session_state.page == 3:
                     task_name = TASKS[task_code][1]
 
                     st.markdown(
-                        f"- **{task_code}** {task_name}"
+                        f"- {task_name}"
                     )
 
     # ── 평가방법 ──────────────────────────────────────────
