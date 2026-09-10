@@ -416,58 +416,58 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
         )
 
         st.warning(
-            f"### {title} · 응답 일관성 확인\n\n"
+            f"**{title} · 응답 일관성 확인**\n\n"
             f"**비교 강도 재확인 권장 | CR {cr_text}**\n\n"
             "아래 비교에서 중요도의 차이(3·5·7·9)가 "
             "의도한 판단인지 확인해 주세요."
         )
-        
-            if r.get("worst"):
-                st.markdown("**우선 확인할 비교**")
 
-                pair_list = pairs(
-                    len(labels)
+        if r.get("worst"):
+            st.markdown("**우선 확인할 비교**")
+
+            pair_list = pairs(
+                len(labels)
+            )
+
+            for rank, (a, b) in enumerate(
+                r["worst"],
+                1,
+            ):
+                ia = labels.index(a)
+                ib = labels.index(b)
+
+                if ia > ib:
+                    ia, ib = ib, ia
+                    a, b = b, a
+
+                pair_index = pair_list.index(
+                    (ia, ib)
                 )
 
-                for rank, (a, b) in enumerate(
-                    r["worst"],
-                    1,
-                ):
-                    ia = labels.index(a)
-                    ib = labels.index(b)
+                value = values[pair_index]
 
-                    if ia > ib:
-                        ia, ib = ib, ia
-                        a, b = b, a
+                if value == 1:
+                    result_text = "동등 · 1점"
 
-                    pair_index = pair_list.index(
-                        (ia, ib)
+                elif value > 0:
+                    result_text = (
+                        f"왼쪽 항목이 {abs(value)}점 중요"
                     )
 
-                    value = values[pair_index]
-
-                    if value == 1:
-                        result_text = "동등 · 1점"
-
-                    elif value > 0:
-                        result_text = (
-                            f"왼쪽 항목이 {abs(value)}점 중요"
-                        )
-
-                    else:
-                        result_text = (
-                            f"오른쪽 항목이 {abs(value)}점 중요"
-                        )
-
-                    st.markdown(
-                        f"{rank}. {a} ↔ {b} "
-                        f"**({result_text})**"
+                else:
+                    result_text = (
+                        f"오른쪽 항목이 {abs(value)}점 중요"
                     )
 
-                st.caption(
-                    "※ 현재 응답이 본인의 판단을 정확히 반영한 것이라면 "
-                    "CR을 낮추기 위해 억지로 수정할 필요는 없습니다."
+                st.markdown(
+                    f"{rank}. {a} ↔ {b} "
+                    f"**({result_text})**"
                 )
+
+        st.caption(
+            "※ 현재 응답이 본인의 판단을 정확히 반영한 것이라면 "
+            "CR을 낮추기 위해 억지로 수정할 필요는 없습니다."
+        )
     else:
         st.info(
             r["message"]
