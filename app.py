@@ -138,9 +138,9 @@ st.markdown(
 }
 
 .recheck-list {
-    line-height: 1.25;
+    line-height: 1.35;
     margin-top: 0;
-    margin-bottom: 0.15rem;
+    margin-bottom: 0.25rem;
 }
 
 .recheck-item {
