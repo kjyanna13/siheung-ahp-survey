@@ -422,13 +422,41 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
             "의도한 판단인지 확인해 주세요."
         )
         
-        if r.get("worst"):
-            st.markdown("**우선 확인할 비교**")
+            if r.get("worst"):
+                st.markdown("**우선 확인할 비교**")
 
-            for i, (a, b) in enumerate(r["worst"], 1):
-                st.write(
-                    f"{i}. {a} ↔ {b}"
-                )
+                pair_list = pairs(len(labels))
+
+                for rank, (a, b) in enumerate(r["worst"], 1):
+                    ia = labels.index(a)
+                    ib = labels.index(b)
+
+                    if ia > ib:
+                        ia, ib = ib, ia
+                        a, b = b, a
+
+                    pair_index = pair_list.index((ia, ib))
+                    value = values[pair_index]
+
+                    if value == 1:
+                        result_text = "동등 · 1점"
+
+                    elif value > 0:
+                        result_text = (
+                            f"{a.split(' ')[0]}이 "
+                            f"{abs(value)}점 중요"
+                        )
+
+                    else:
+                        result_text = (
+                            f"{b.split(' ')[0]}가 "
+                            f"{abs(value)}점 중요"
+                        )
+
+                    st.markdown(
+                        f"{rank}. {a} ↔ {b} "
+                        f"**({result_text})**"
+                    )
 
         st.caption(
             "※ 현재 응답이 본인의 판단을 정확히 반영한 것이라면 "
