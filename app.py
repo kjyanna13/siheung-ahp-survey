@@ -73,7 +73,7 @@ def render_reference_pdf():
                     '📄 분야별 전략·핵심과제 체계 참고자료'
                     '</div>'
                     '<div class="reference-desc">'
-                    '6개 분야의 목표·전략·핵심과제 전체 체계를 정리한 자료입니다.<br>'
+                    '6개 분야의 목표·전략·핵심과제 전체 체계를 정리한 자료입니다.'
                     '응답 전 소관 분야의 평가구조를 확인해 주십시오.'
                     '</div>'
                     '</div>'
@@ -530,33 +530,66 @@ reference-anchor가 들어 있는 Streamlit container만
 */
 
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
-    background: #eef4ff !important;
+    background: #f8fbff !important;
 
-    border: 1px solid #cbd9f2 !important;
+    border: 1px solid #9fc0ea !important;
     border-left: 5px solid #2f67c7 !important;
 
-    border-radius: 12px !important;
+    border-radius: 10px !important;
 
-    padding: 0.55rem 0.85rem !important;
+    padding-top: 0.20rem !important;
+    padding-bottom: 0.30rem !important;
+    padding-left: 0.80rem !important;
+    padding-right: 0.80rem !important;
 
-    margin-top: 0.60rem;
-    margin-bottom: 0.65rem;
+    margin-top: 0.40rem !important;
+    margin-bottom: 0.55rem !important;
 }
-
-
-/* CSS 선택을 위한 숨김 anchor */
 
 .reference-anchor {
-    display: none;
+    display: none !important;
 }
 
+.reference-content {
+    margin: 0 !important;
+    padding: 0 !important;
+}
 
-/* 참고자료 박스 안쪽 여백 제거 */
+.reference-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #163a63;
+    line-height: 1.20;
+
+    margin-top: 0 !important;
+    margin-bottom: 0.10rem !important;
+    padding: 0 !important;
+}
+
+.reference-desc {
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: #596273;
+    line-height: 1.25;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* 내부 세로 블록 간격 축소 */
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
+[data-testid="stVerticalBlock"] {
+    gap: 0.15rem !important;
+}
 
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 [data-testid="stHorizontalBlock"] {
-    align-items: center;
+    align-items: center !important;
+    gap: 0.65rem !important;
 }
+
+/* Markdown 기본 여백 제거 */
 
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 [data-testid="stMarkdownContainer"] {
@@ -570,36 +603,7 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
     padding: 0 !important;
 }
 
-
-/* 참고자료 왼쪽 텍스트 */
-
-.reference-content {
-    margin: 0;
-    padding: 0.05rem 0;
-}
-
-.reference-title {
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: #163a63;
-
-    line-height: 1.30;
-
-    margin: 0 0 0.15rem 0;
-}
-
-.reference-desc {
-    font-size: 0.82rem;
-    font-weight: 400;
-    color: #596273;
-
-    line-height: 1.35;
-
-    margin: 0;
-}
-
-
-/* 참고자료 다운로드 버튼 */
+/* 다운로드 버튼 */
 
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 [data-testid="stDownloadButton"] {
@@ -609,14 +613,13 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 [data-testid="stDownloadButton"] button {
-    min-height: 2.6rem;
+    min-height: 2.45rem;
 
-    border-radius: 9px;
+    border: 1px solid #9fc0ea !important;
+    border-radius: 8px;
 
-    border: 1px solid #b8cae8;
-
-    background: #ffffff;
-    color: #163a63;
+    background: #ffffff !important;
+    color: #163a63 !important;
 
     font-size: 0.84rem;
     font-weight: 700;
@@ -624,12 +627,10 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 [data-testid="stDownloadButton"] button:hover {
-    border-color: #2f67c7;
-    color: #174ea6;
-
-    background: #f8fbff;
+    border-color: #2f67c7 !important;
+    background: #eef4ff !important;
+    color: #174ea6 !important;
 }
-
 
 /* =========================================================
    6. Streamlit 공통 Container
