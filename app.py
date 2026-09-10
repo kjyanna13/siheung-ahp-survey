@@ -761,14 +761,20 @@ elif st.session_state.page == 3:
                     f"**전략 {si}. {strat_name}**"
                 )
 
+                task_lines = []
+
                 for task_code in task_codes:
                     task_name = TASKS[task_code][1]
-
-                    st.markdown(
+                    task_lines.append(
                         f"- {task_name}"
                     )
 
-                st.write("")
+                st.markdown(
+                    "\n".join(task_lines)
+                )
+
+                if si < len(STRAT[field]):
+                    st.write("")
 
         # 평면화 분야
         else:
@@ -776,14 +782,19 @@ elif st.session_state.page == 3:
                 "**평가대상 핵심과제**"
             )
 
+            task_lines = []
+
             for strat_code, strat_name, task_codes in STRAT[field]:
                 for task_code in task_codes:
                     task_name = TASKS[task_code][1]
 
-                    st.markdown(
+                    task_lines.append(
                         f"- {task_name}"
                     )
 
+            st.markdown(
+                "\n".join(task_lines)
+            )
     # ── 평가방법 ──────────────────────────────────────────
     st.warning(
         "**평가방법**  \n\n"
