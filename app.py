@@ -139,7 +139,7 @@ st.markdown(
 }
 
 .recheck-list {
-    font-size: 0.84rem
+    font-size: 0.80rem
     line-height: 1.35;
     margin-top: 0;
     margin-bottom: 0.25rem;
@@ -148,6 +148,10 @@ st.markdown(
 .recheck-item {
     margin: 0;
     padding: 0;
+}
+
+.recheck-item b {
+    font-weight: 600;
 }
 
 [data-testid="stVerticalBlockBorderWrapper"] {
@@ -385,7 +389,7 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
 
                 check_lines.append(
                     f'<div class="recheck-item">'
-                    f'{rank}. {a} ↔ {b} '
+                    f'• {a} ↔ {b} '
                     f'<b>({result_text})</b>'
                     f'</div>'
                 )
