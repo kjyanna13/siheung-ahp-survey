@@ -131,6 +131,12 @@ st.markdown(
     font-weight: 600;
 }
 
+.recheck-wrap {
+    margin-left: 1rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0.4rem;
+}
+
 .recheck-title {
     font-size: 0.92rem;
     font-weight: 700;
@@ -150,8 +156,37 @@ st.markdown(
     padding: 0;
 }
 
-.recheck-item b {
-    font-weight: 600;
+
+/* ─────────────────────────────────────────────
+   판단 방향 재확인 목록
+───────────────────────────────────────────── */
+
+.trans-wrap {
+    margin-left: 1rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0.35rem;
+}
+
+.trans-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin-bottom: 0.08rem;
+}
+
+.trans-list {
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+
+.trans-item {
+    margin: 0;
+    padding: 0;
+    font-weight: 400;
+}
+
+.trans-bullet {
+    font-weight: 300;
+    color: #6b7280;
 }
 
 [data-testid="stVerticalBlockBorderWrapper"] {
@@ -395,10 +430,12 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
                 )
 
             st.markdown(
+                '<div class="recheck-wrap">'
                 '<div class="recheck-title">우선 확인할 비교</div>'
                 '<div class="recheck-list">'
                 + ''.join(check_lines)
-                + '</div>',
+                + '</div>'
+                '</div>',
                 unsafe_allow_html=True,
             )
 
@@ -421,24 +458,54 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
                 "아래 비교를 다시 확인해 주세요."
             )
 
-            for idx, (a, b, c) in enumerate(viol, 1):
-                st.markdown(f"**{idx}. {a} · {b} · {c}**")
+            trans_lines = []
 
-                st.markdown(
-                    f"- **{a} > {b}**  \n"
-                    f"- **{b} > {c}**  \n"
-                    f"- 그런데 **{a} ≤ {c}**"
+            for a, b, c in viol:
+                trans_lines.append(
+                    f'<div class="trans-item">'
+                    f'<span class="trans-bullet">·</span> '
+                    f'{a} &gt; {b}'
+                    f'</div>'
                 )
 
-                st.info(
-                    f"→ 「{a} ↔ {b}」, "
-                    f"「{b} ↔ {c}」, "
-                    f"「{a} ↔ {c}」를 다시 확인해 주세요."
+                trans_lines.append(
+                    f'<div class="trans-item">'
+                    f'<span class="trans-bullet">·</span> '
+                    f'{b} &gt; {c}'
+                    f'</div>'
                 )
 
-            st.warning(
-                "판단 방향의 모순을 수정하면 다음 단계로 진행할 수 있습니다."
+                trans_lines.append(
+                    f'<div class="trans-item">'
+                    f'<span class="trans-bullet">·</span> '
+                    f'그런데 {a} ≤ {c}'
+                    f'</div>'
+                )
+
+            st.markdown(
+                '<div class="trans-wrap">'
+                '<div class="trans-title">판단 방향 재확인</div>'
+                '<div class="trans-list">'
+                + ''.join(trans_lines)
+                + '</div>'
+                '</div>',
+                unsafe_allow_html=True,
             )
+
+            st.markdown(
+                '<div style="'
+                'color:#d32f2f;'
+                'font-size:0.88rem;'
+                'font-weight:700;'
+                'margin-top:0.35rem;'
+                'margin-left:1rem;'
+                'margin-bottom:0.3rem;'
+                '">'
+                '⚠ 판단 방향의 모순을 수정해야 다음 단계로 진행할 수 있습니다.'
+                '</div>',
+                unsafe_allow_html=True,
+            )
+            
         else:
             st.success("✓ 중요도 판단 방향이 일관됩니다.")
     else:
