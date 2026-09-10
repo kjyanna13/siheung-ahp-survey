@@ -53,39 +53,46 @@ REFERENCE_PDF = (
 def render_reference_pdf():
     """첫 화면에서 분야별 전략·핵심과제 참고자료를 제공합니다."""
 
-    st.markdown(
-        (
-            '<div class="reference-card">'
-            '<div class="reference-title">'
-            '📄 분야별 전략·핵심과제 체계 참고자료'
-            '</div>'
-            '<div class="reference-desc">'
-            '6개 분야의 목표·전략·핵심과제 전체 체계를 정리한 자료입니다. '
-            '응답 전 소관 분야의 평가구조를 확인해 주십시오.'
-            '</div>'
-            '</div>'
-        ),
-        unsafe_allow_html=True,
-    )
+    with st.container(border=True):
+        c1, c2 = st.columns([4, 1.4], vertical_alignment="center")
 
-    if REFERENCE_PDF.exists():
-        pdf_bytes = REFERENCE_PDF.read_bytes()
+        with c1:
+            st.markdown(
+                """
+                <div style="
+                    font-size:0.95rem;
+                    font-weight:800;
+                    color:#163a63;
+                    margin-bottom:0.10rem;
+                ">
+                    📄 분야별 전략·핵심과제 체계 참고자료
+                </div>
+                <div style="
+                    font-size:0.82rem;
+                    line-height:1.35;
+                    color:#596273;
+                ">
+                    6개 분야의 목표·전략·핵심과제 전체 체계를 정리한 자료입니다.<br>
+                    응답 전 소관 분야의 평가구조를 확인해 주십시오.
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
-        st.download_button(
-            "📄 참고자료 PDF 내려받기",
-            data=pdf_bytes,
-            file_name="시흥시_분야별_전략_핵심과제_체계.pdf",
-            mime="application/pdf",
-            width="stretch",
-        )
+        with c2:
+            if REFERENCE_PDF.exists():
+                pdf_bytes = REFERENCE_PDF.read_bytes()
 
-    else:
-        st.info(
-            "참고자료 PDF가 등록되지 않았습니다. "
-            "프로젝트의 assets 폴더에 "
-            "'시흥시_분야별_전략_핵심과제_체계.pdf' 파일을 추가해 주세요."
-        )
+                st.download_button(
+                    "📄 PDF 내려받기",
+                    data=pdf_bytes,
+                    file_name="시흥시_분야별_전략_핵심과제_체계.pdf",
+                    mime="application/pdf",
+                    width="stretch",
+                )
 
+            else:
+                st.caption("PDF 미등록")
 
 st.markdown(
     """
