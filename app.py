@@ -130,10 +130,24 @@ st.markdown(
 }
 
 [data-testid="stSlider"] {
-    padding-top: 0.1rem;
-    padding-bottom: 0.1rem;
+    padding-top: 0.05rem;
+    padding-bottom: 0 !important;
+    margin-bottom: -0.35rem !important;
 }
 
+.ahp-pick {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #8a9199;
+    line-height: 1.4;
+    margin-top: 0 !important;
+    margin-bottom: 0.05rem;
+}
+
+.ahp-pick b {
+    color: #6b7280;
+    font-weight: 600;
+}
 
 /* ─────────────────────────────────────────────
    선택 결과
