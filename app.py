@@ -811,7 +811,7 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) [data-tes
 
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.respondent-anchor),
 [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .respondent-anchor) {
-    border: 1px solid #cfd9e8 !important;
+    border: 2px solid #cfd9e8 !important;
     border-radius: 14px !important;
     background: #ffffff !important;
     padding: 0.85rem 1rem !important;
@@ -1447,13 +1447,22 @@ if st.session_state.page == 1:
         st.markdown(
             (
                 '<div class="respondent-note">'
-                '<b>ℹ 응답정보 안내</b>'
+                '<b>ℹ 개인정보 수집 및 이용 안내</b>'
                 '<span>'
-                '입력한 정보는 전문가 응답 구분 및 분석을 위한 용도로 활용됩니다.'
+                '「개인정보 보호법」 제15조에 따라 아래와 같이 수집·이용합니다.<br>'
+                '• <b>수집 항목</b> 성명 · 소속 · 관련 분야 경력<br>'
+                '• <b>이용 목적</b> 응답자 확인과 분야별 구분, 개별 식별이 불가능한 형태의 통계 분석<br>'
+                '• <b>보유 기간</b> 연구 종료 시 지체 없이 파기 (제3자 제공 없음)<br>'
+                '※ 동의를 거부하실 수 있으며, 이 경우 조사 참여가 제한됩니다'
                 '</span>'
                 '</div>'
             ),
             unsafe_allow_html=True,
+        )
+
+        agree = st.checkbox(
+            "위 내용을 확인하였으며, 개인정보 수집·이용에 동의합니다. (필수)",
+            key="privacy_agree",
         )
 
     if field in GENERAL_TYPES:
@@ -1674,16 +1683,6 @@ elif st.session_state.page == 3:
             '<div class="page-head">'
             f'<div class="page-title">{field} 분야 전략·핵심과제 중요도</div>'
             f'<div class="page-meta">{nb}개 비교블록 · {nq}문항</div>'
-            '</div>'
-        ),
-        unsafe_allow_html=True,
-    )
-
-    st.markdown(
-        (
-            '<div class="page-info-card">'
-            '<b>분야 목표</b><br>'
-            f'{FIELD_GOAL[field]}'
             '</div>'
         ),
         unsafe_allow_html=True,
