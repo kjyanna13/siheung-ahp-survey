@@ -164,8 +164,8 @@ st.markdown(
 
     line-height: 1.0;
 
-    margin-top: -0.10 !important;
-    margin-bottom: 0.05rem;
+    margin-top: -0.8 !important;
+    margin-bottom: 0.1rem;
 }
 
 .ahp-pick b {
