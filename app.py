@@ -524,7 +524,12 @@ st.markdown(
    5. 분야별 전략·핵심과제 참고자료
 ========================================================= */
 
-div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
+/* Streamlit 1.6x 부터 stVerticalBlockBorderWrapper 가 없어지고
+   테두리·안쪽여백·gap 이 stVerticalBlock 자체로 옮겨졌다.
+   구버전(1.4x~1.5x)과 신버전을 모두 잡도록 두 선택자를 함께 쓴다. */
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor),
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .reference-anchor) {
     background: #eef4ff !important;
 
     border: 1px solid #9fc0ea !important;
@@ -532,11 +537,22 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
 
     border-radius: 10px !important;
 
-    /* 상하 여백은 여기 한 곳에서만 조절하십시오 */
-    padding: 0.60rem 0.85rem !important;
+    /* ★ 박스 안쪽 위아래 여백 — 여기 하나로 조절 */
+    padding: 0.45rem 0.85rem !important;
 
-    margin-top: 0.40rem !important;
-    margin-bottom: 0.55rem !important;
+    /* 내부 요소 사이 간격 제거 */
+    gap: 0 !important;
+}
+
+
+/* ★ 박스 바깥 위 간격
+   앞 요소와의 사이는 페이지 stVerticalBlock 의 gap(16px)이 만든다.
+   래퍼에 음수 margin 을 주어 당긴다. 더 붙이려면 값을 키울 것. */
+
+[data-testid="stLayoutWrapper"]:has(.reference-anchor),
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
+    margin-top: -0.55rem !important;
+    margin-bottom: 0.25rem !important;
 }
 
 
@@ -551,23 +567,21 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
    (span만 숨기면 감싸고 있는 블록의 높이가 그대로 남습니다) */
 
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
-[data-testid="stVerticalBlock"] > div:has(.reference-anchor) {
+[data-testid="stVerticalBlock"] > div:has(.reference-anchor),
+[data-testid="stVerticalBlock"] > [data-testid="stElementContainer"]:has(.reference-anchor) {
     display: none !important;
 }
 
 
 /* 컨테이너 내부 세로 간격 제거 */
 
-div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
-[data-testid="stVerticalBlock"] {
-    gap: 0 !important;
-}
+/* (gap 은 위 본체 규칙에서 처리한다) */
 
 
 /* 실제 내용이 들어 있는 가로 행 — 음수 마진 없이 0 */
 
-div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
-[data-testid="stHorizontalBlock"] {
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) [data-testid="stHorizontalBlock"],
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .reference-anchor) > [data-testid="stHorizontalBlock"] {
     margin: 0 !important;
     align-items: center !important;
     gap: 0.65rem !important;
@@ -576,10 +590,10 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 
 /* Markdown 기본 여백 제거 */
 
-div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
-[data-testid="stMarkdownContainer"],
-div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
-[data-testid="stMarkdownContainer"] p {
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) [data-testid="stMarkdownContainer"],
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) [data-testid="stMarkdownContainer"] p,
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .reference-anchor) [data-testid="stMarkdownContainer"],
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .reference-anchor) [data-testid="stMarkdownContainer"] p {
     margin: 0 !important;
     padding: 0 !important;
 }
@@ -617,14 +631,14 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 
 /* 참고자료 다운로드 버튼 */
 
-div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
-[data-testid="stDownloadButton"] {
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) [data-testid="stDownloadButton"],
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .reference-anchor) [data-testid="stDownloadButton"] {
     margin: 0 !important;
     padding: 0 !important;
 }
 
-div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
-[data-testid="stDownloadButton"] button {
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) [data-testid="stDownloadButton"] button,
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .reference-anchor) [data-testid="stDownloadButton"] button {
     min-height: 2.45rem;
 
     border: 1px solid #9fc0ea !important;
@@ -637,8 +651,8 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
     font-weight: 700;
 }
 
-div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
-[data-testid="stDownloadButton"] button:hover {
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) [data-testid="stDownloadButton"] button:hover,
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .reference-anchor) [data-testid="stDownloadButton"] button:hover {
     border-color: #2f67c7 !important;
     background: #f8fbff !important;
     color: #174ea6 !important;
@@ -712,8 +726,9 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 
     /* 참고자료 */
 
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
-        padding: 0.65rem 0.75rem !important;
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor),
+    [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .reference-anchor) {
+        padding: 0.55rem 0.75rem !important;
     }
 
     .reference-title {
