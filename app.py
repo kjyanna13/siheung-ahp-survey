@@ -54,27 +54,39 @@ def render_reference_pdf():
     """첫 화면에서 분야별 전략·핵심과제 참고자료를 제공합니다."""
 
     with st.container(border=True):
-        c1, c2 = st.columns([4, 1.4], vertical_alignment="center")
+        c1, c2 = st.columns(
+            [4, 1.35],
+            vertical_alignment="center",
+        )
 
         with c1:
             st.markdown(
-                """
-                <div style="
-                    font-size:0.95rem;
-                    font-weight:800;
-                    color:#163a63;
-                    margin-bottom:0.10rem;
-                ">
-                    📄 분야별 전략·핵심과제 체계 참고자료
-                </div>
-                <div style="
-                    font-size:0.82rem;
-                    line-height:1.35;
-                    color:#596273;
-                ">
-                    6개 분야의 목표·전략·핵심과제 전체 체계를 정리한 자료입니다. 응답 전 소관 분야의 평가구조를 확인해 주십시오.
-                </div>
-                """,
+                (
+                    '<div style="'
+                    'padding:0.15rem 0;'
+                    'margin:0;'
+                    '">'
+                    '<div style="'
+                    'font-size:0.95rem;'
+                    'font-weight:800;'
+                    'color:#163a63;'
+                    'line-height:1.3;'
+                    'margin:0 0 0.22rem 0;'
+                    '">'
+                    '📄 분야별 전략·핵심과제 체계 참고자료'
+                    '</div>'
+                    '<div style="'
+                    'font-size:0.82rem;'
+                    'font-weight:400;'
+                    'line-height:1.35;'
+                    'color:#596273;'
+                    'margin:0;'
+                    '">'
+                    '6개 분야의 목표·전략·핵심과제 전체 체계를 정리한 자료입니다. '
+                    '응답 전 소관 분야의 평가구조를 확인해 주십시오.'
+                    '</div>'
+                    '</div>'
+                ),
                 unsafe_allow_html=True,
             )
 
@@ -92,7 +104,6 @@ def render_reference_pdf():
 
             else:
                 st.caption("PDF 미등록")
-
 st.markdown(
     """
     
