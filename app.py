@@ -131,6 +131,8 @@ st.markdown(
 }
 
 [data-testid="stSlider"] {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
     padding-top: 0.05rem;
     padding-bottom: 0 !important;
     margin-bottom: -0.35rem !important;
