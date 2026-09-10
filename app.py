@@ -132,12 +132,14 @@ st.markdown(
 }
 
 .recheck-title {
+    font-size: 0.92rem;
     font-weight: 700;
-    margin-top: 0.15rem;
+    margin-top: 0.10rem;
     margin-bottom: 0.10rem;
 }
 
 .recheck-list {
+    font-size: 0.84rem
     line-height: 1.35;
     margin-top: 0;
     margin-bottom: 0.25rem;
@@ -333,11 +335,41 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
     elif r["status"] == "재검토":
         cr_text = f"{r['cr']:.3f}" if r.get("cr") is not None else "-"
 
-        st.warning(
-            f"**{title} · 응답 일관성 확인**  \n"
-            f"**비교 강도 재확인 권장 | CR {cr_text}**  \n"
-            "아래 비교에서 중요도의 차이(3·5·7·9)가 "
-            "의도한 판단인지 확인해 주세요."
+        st.markdown(
+            f"""
+            <div style="
+                background-color: #fff9db;
+                border-radius: 8px;
+                padding: 0.75rem 1rem;
+                margin-bottom: 0.8rem;
+                color: #9a6700;
+            ">
+                <div style="
+                    font-size: 1rem;
+                    font-weight: 700;
+                    margin-bottom: 0.20rem;
+                ">
+                    {title} · 응답 일관성 확인
+                </div>
+
+                <div style="
+                    font-size: 0.90rem;
+                    font-weight: 700;
+                    margin-bottom: 0.15rem;
+                ">
+                    비교 강도 재확인 권장 | CR {cr_text}
+                </div>
+
+                <div style="
+                    font-size: 0.82rem;
+                    font-weight: 400;
+                    line-height: 1.3;
+                ">
+                    아래 비교에서 중요도의 차이가 의도한 판단인지 확인해 주세요.
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
 
         if r.get("worst"):
