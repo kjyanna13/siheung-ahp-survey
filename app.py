@@ -791,22 +791,42 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) [data-tes
 }
 
 .respondent-note {
-    display: flex;
-    align-items: center;
-    gap: 0.55rem;
+    /* 제목과 설명을 가로로 붙이지 않고 위아래로 쌓는다 */
+    display: block;
     background: #eef4ff;
     border-radius: 9px;
-    padding: 0.55rem 0.70rem;
+    padding: 0.62rem 0.78rem;
     margin-top: 0.45rem;
     font-size: 0.80rem;
-    line-height: 1.35;
+    line-height: 1.50;
     color: #596273;
 }
 
 .respondent-note b {
+    display: block;
     color: #2456a6;
     font-weight: 800;
-    white-space: nowrap;
+    font-size: 0.85rem;
+
+    /* ★ 제목과 설명 사이 간격 — 여기 하나로 조절 */
+    margin-bottom: 0.40rem;
+
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid #d6e3f7;
+}
+
+.respondent-note span {
+    display: block;
+}
+
+.respondent-note span b {
+    display: inline;
+    font-size: inherit;
+    color: #37527a;
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+    border: none;
 }
 
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.respondent-anchor),
@@ -860,12 +880,7 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.respondent-anchor) input,
     }
 
     .respondent-note {
-        display: block;
-    }
-
-    .respondent-note b {
-        display: block;
-        margin-bottom: 0.12rem;
+        font-size: 0.78rem;
     }
 }
 
@@ -1465,25 +1480,6 @@ if st.session_state.page == 1:
             key="privacy_agree",
         )
 
-    if field in GENERAL_TYPES:
-        st.info(
-            f"**{field}** 응답자는 평가기준의 상대적 중요도 평가에 참여합니다."
-        )
-    else:
-        nb, nq = block_stats(field)
-
-        flat_note = (
-            " · 전략층을 두지 않는 평면화 분야"
-            if field in FLAT
-            else ""
-        )
-
-        st.info(
-            f"**{field}** — 분야 목표 「{FIELD_GOAL[field]}」\n\n"
-            f"쌍대비교 {nb}블록 {nq}문항{flat_note} · "
-            f"5점 척도 {len(tasks_of(field))}개 핵심과제 평가"
-        )
-
     with st.expander("이전 응답 이어서 하기"):
         st.markdown(
             "이전에 **응답 임시저장**으로 내려받은 파일을 선택해 주세요. "
@@ -1530,7 +1526,10 @@ if st.session_state.page == 1:
         type="primary",
         width="stretch",
     ):
-        if not name.strip():
+        if not agree:
+            st.error("개인정보 수집·이용에 동의해 주십시오.")
+
+        elif not name.strip():
             st.error("성명을 입력해 주십시오.")
 
         elif not org.strip():
@@ -1556,6 +1555,8 @@ if st.session_state.page == 1:
                 "org": org.strip(),
                 "field": field,
                 "career": career,
+                "privacy_agree": True,
+                "privacy_agreed_at": storage.now_kst(),
             }
 
             go(2)
