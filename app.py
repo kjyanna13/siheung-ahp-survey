@@ -282,14 +282,14 @@ st.markdown(
 }
 
 /* 일관성 검토 성공 메시지 */
-[data-testid="stAlert"] {
-    padding: 0.55rem 0.75rem !important;
-    min-height: 0 !important;
-}
-
-[data-testid="stAlert"] p {
-    font-size: 0.85rem !important;
-    line-height: 1.30 !important;
+.success-compact {
+    background: #e8f7ed;
+    color: #16803a;
+    border-radius: 8px;
+    padding: 0.48rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1.30;
     margin: 0 !important;
 }
 
@@ -1640,12 +1640,6 @@ elif st.session_state.page == 2:
     )
 
     trans_viol = st.session_state.crit_diag.get("transitivity", [])
-
-    st.write("")
-
-    st.caption(
-        "※ 일관성비율(CR)이 0.10을 초과한 경우에는 중요도 차이를 다시 확인해 주십시오."
-    )
 
     st.write("")
 
