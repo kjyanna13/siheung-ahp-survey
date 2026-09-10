@@ -93,29 +93,37 @@ st.markdown(
     font-weight: 600;
     color: #374151;
 
-    margin-top: 0.4rem;
-    margin-bottom: 0.25rem;
+    margin-top: 0.35rem;
+    margin-bottom: 0.15rem;
 }
 
 
 /* ─────────────────────────────────────────────
    9 · 7 · 5 · 3 · 1 · 3 · 5 · 7 · 9
+   슬라이더 점 위치와 동일 간격으로 배치
 ───────────────────────────────────────────── */
 
 .ahp-score-grid {
-    display: grid;
-    grid-template-columns: repeat(9, 1fr);
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     font-size: 0.82rem;
     font-weight: 600;
     color: #4b5563;
 
-    padding-left: 0.15rem;
-    padding-right: 0.15rem;
+    padding-left: 0;
+    padding-right: 0;
 
     margin-top: 0.15rem;
-    margin-bottom: -0.15rem;
+    margin-bottom: -0.20rem;
+}
+
+.ahp-score-grid span {
+    width: 0;
+    display: flex;
+    justify-content: center;
+    white-space: nowrap;
 }
 
 
@@ -123,21 +131,25 @@ st.markdown(
    Streamlit 슬라이더
 ───────────────────────────────────────────── */
 
+/* 선택값 숫자 말풍선 숨김 */
 [data-testid="stSliderThumbValue"] {
     display: none !important;
 }
 
+/* Streamlit 기본 눈금 숨김 */
 [data-testid="stSliderTickBar"] {
     display: none !important;
 }
 
+/* 슬라이더 전체 여백 조정 */
 [data-testid="stSlider"] {
-    padding-left: 0.5 !important;
-    padding-right: 0.5 !important;
-    padding-top: 0.02rem;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 0 !important;
     padding-bottom: 0 !important;
 
-    margin-bottom: -0.30rem !important;
+    margin-top: 0 !important;
+    margin-bottom: -0.20rem !important;
 }
 
 
@@ -148,7 +160,6 @@ st.markdown(
 .ahp-pick {
     font-size: 0.9rem;
     font-weight: 400;
-
     color: #8a9199;
 
     line-height: 1.4;
@@ -161,15 +172,6 @@ st.markdown(
     color: #6b7280;
     font-weight: 600;
 }
-
-
-/* 선택 결과의 굵은 글씨도 회색 */
-
-.ahp-pick b {
-    color: #6b7280;
-    font-weight: 600;
-}
-
 
 /* ─────────────────────────────────────────────
    Streamlit 테두리 컨테이너
