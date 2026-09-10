@@ -157,7 +157,7 @@ st.markdown(
 }
 
 .recheck-item {
-    font-size: 0.92rem;
+    font-size: inherit;
     font-weight: 400;
     line-height: inherit;
     margin: 0;
@@ -175,17 +175,18 @@ st.markdown(
 .trans-wrap {
     margin-left: 1rem;
     margin-top: 0.2rem;
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.4rem;
 }
 
 .trans-title {
-    font-size: 0.92rem;
+    font-size: 1rem;
     font-weight: 700;
+    margin-top: 0.10rem;
     margin-bottom: 0.08rem;
 }
 
 .trans-list {
-    font-size: 0.82rem;
+    font-size: 0.92rem;
     font-weight: 400;
     line-height: 1.35;
     margin-top: 0;
@@ -193,12 +194,15 @@ st.markdown(
 }
 
 .trans-item {
+    font-size: inherit;
+    font-weight: 400;
+    line-height: inherit;
     margin: 0;
     padding: 0;
 }
 
 .trans-bullet {
-    font-weight: 300;
+    font-weight: 600;
     color: #6b7280;
 }
 
