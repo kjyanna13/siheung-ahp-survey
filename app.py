@@ -428,6 +428,8 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
                 len(labels)
             )
 
+            check_lines = []
+
             for rank, (a, b) in enumerate(
                 r["worst"],
                 1,
@@ -462,6 +464,10 @@ def show_block_diag(title, values, labels, extra_transitivity=False):
                     f"{rank}. {a} ↔ {b} "
                     f"**({result_text})**"
                 )
+            st.markdown(
+                "  \n".join(check_lines)
+            )
+        
 
         st.caption(
             "※ 현재 응답이 본인의 판단을 정확히 반영한 것이라면 "
