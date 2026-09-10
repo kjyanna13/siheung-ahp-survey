@@ -111,11 +111,11 @@ st.markdown(
     font-weight: 600;
     color: #4b5563;
 
-    padding-left: 0.02rem;
-    padding-right: 0.02rem;
+    padding-left: 0.0rem;
+    padding-right: 0.0rem;
 
-    margin-top: 0.35rem;
-    margin-bottom: -0.35rem;
+    margin-top: 0.15rem;
+    margin-bottom: -0.15rem;
 }
 
 
