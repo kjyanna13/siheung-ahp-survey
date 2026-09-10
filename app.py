@@ -50,39 +50,30 @@ REFERENCE_PDF = (
 )
 
 
-def render_reference_pdf():
+ddef render_reference_pdf():
     """첫 화면에서 분야별 전략·핵심과제 참고자료를 제공합니다."""
 
     with st.container(border=True):
+
+        st.markdown(
+            '<div class="reference-anchor"></div>',
+            unsafe_allow_html=True,
+        )
+
         c1, c2 = st.columns(
-            [4, 1.35],
+            [4.2, 1.35],
             vertical_alignment="center",
         )
 
         with c1:
             st.markdown(
                 (
-                    '<div style="'
-                    'margin:0;'
-                    'padding:0.05rem 0;'
-                    '">'
-                    '<div style="'
-                    'font-size:0.95rem;'
-                    'font-weight:800;'
-                    'color:#163a63;'
-                    'line-height:1.25;'
-                    'margin:0 0 0.12rem 0;'
-                    '">'
-                    '분야별 전략·핵심과제 체계 참고자료'
+                    '<div class="reference-content">'
+                    '<div class="reference-title">'
+                    '📄 분야별 전략·핵심과제 체계 참고자료'
                     '</div>'
-                    '<div style="'
-                    'font-size:0.82rem;'
-                    'font-weight:400;'
-                    'line-height:1.30;'
-                    'color:#596273;'
-                    'margin:0;'
-                    '">'
-                    '6개 분야의 목표·전략·핵심과제 전체 체계를 정리한 자료입니다. '
+                    '<div class="reference-desc">'
+                    '6개 분야의 목표·전략·핵심과제 전체 체계를 정리한 자료입니다.<br>'
                     '응답 전 소관 분야의 평가구조를 확인해 주십시오.'
                     '</div>'
                     '</div>'
@@ -95,7 +86,7 @@ def render_reference_pdf():
                 pdf_bytes = REFERENCE_PDF.read_bytes()
 
                 st.download_button(
-                    "PDF 내려받기",
+                    "📄 PDF 내려받기",
                     data=pdf_bytes,
                     file_name="시흥시_분야별_전략_핵심과제_체계.pdf",
                     mime="application/pdf",
@@ -108,6 +99,46 @@ st.markdown(
     """
     
 <style>
+
+/* ─────────────────────────────────────────────
+   분야별 전략·핵심과제 참고자료
+───────────────────────────────────────────── */
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
+    background: #eef4ff;
+    border: 1px solid #cbd9f2;
+    border-left: 5px solid #2f67c7;
+    border-radius: 12px;
+
+    padding: 0.65rem 0.85rem;
+}
+
+.reference-anchor {
+    display: none;
+}
+
+.reference-content {
+    padding: 0;
+    margin: 0;
+}
+
+.reference-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #163a63;
+    line-height: 1.3;
+
+    margin: 0 0 0.18rem 0;
+}
+
+.reference-desc {
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: #596273;
+    line-height: 1.35;
+
+    margin: 0;
+}
 
 .block-container {
     max-width: 960px;
