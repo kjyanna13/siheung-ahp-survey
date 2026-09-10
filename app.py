@@ -844,19 +844,30 @@ elif st.session_state.page == 3:
 
         if code == "STRAT":
             st.subheader(
-                f"{bi}. 전략 {len(items)}개 간 비교"
+                f"{bi}. {field} 분야 전략 비교"
             )
 
         elif code == "FLAT":
             st.subheader(
-                f"{bi}. 핵심과제 중요도"
+                f"{bi}. {field} 분야 핵심과제 비교"
             )
 
         else:
+            # 해당 전략의 순번과 전략명 찾기
+            strategy_no = None
             strategy_name = title.split(" — ")[0]
 
+            for si, (strat_code, strat_name, task_codes) in enumerate(
+                STRAT[field],
+                1,
+            ):
+                if strat_code == code:
+                    strategy_no = si
+                    strategy_name = strat_name
+                    break
+
             st.subheader(
-                f"{bi}. {strategy_name}"
+                f"{bi}. [전략 {strategy_no}] {strategy_name}"
             )
 
         st.caption(
@@ -866,7 +877,7 @@ elif st.session_state.page == 3:
         prs = pairs(
             len(items)
         )
-
+        
         saved_vals = saved_hier.get(
             code,
             {},
