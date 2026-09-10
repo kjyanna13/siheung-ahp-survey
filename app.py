@@ -111,8 +111,8 @@ st.markdown(
     font-weight: 600;
     color: #4b5563;
 
-    padding-left: 0.6rem;
-    padding-right: 0.6rem;
+    padding-left: 0.15rem;
+    padding-right: 0.15rem;
 
     margin-top: 0.15rem;
     margin-bottom: -0.15rem;
@@ -132,9 +132,9 @@ st.markdown(
 }
 
 [data-testid="stSlider"] {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    padding-top: 0.05rem;
+    padding-left: 0.5 !important;
+    padding-right: 0.5 !important;
+    padding-top: 0.02rem;
     padding-bottom: 0 !important;
 
     margin-bottom: -0.30rem !important;
