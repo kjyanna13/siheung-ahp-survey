@@ -50,7 +50,7 @@ REFERENCE_PDF = (
 )
 
 
-ddef render_reference_pdf():
+def render_reference_pdf():
     """첫 화면에서 분야별 전략·핵심과제 참고자료를 제공합니다."""
 
     with st.container(border=True):
