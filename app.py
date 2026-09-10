@@ -2055,8 +2055,7 @@ elif st.session_state.page == 4:
 
 elif st.session_state.page == 5:
     meta = st.session_state.meta
-
-
+ 
     st.markdown(
         (
             '<div class="page-head">'
@@ -2484,3 +2483,4 @@ with st.sidebar:
         "문의 : 시흥시정연구원 김주영 연구위원\n\n"
         "031-317-0141"
     )
+ 
