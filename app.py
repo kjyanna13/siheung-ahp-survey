@@ -532,16 +532,26 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor) {
 
     border-radius: 10px !important;
 
-    padding: 0.55rem 0.80rem !important;
+    /* 상하 여백은 여기 한 곳에서만 조절하십시오 */
+    padding: 0.60rem 0.85rem !important;
 
     margin-top: 0.40rem !important;
     margin-bottom: 0.55rem !important;
 }
 
 
-/* 숨김 anchor */
+/* 숨김 anchor — span 자체 */
 
 .reference-anchor {
+    display: none !important;
+}
+
+
+/* ★ anchor를 담고 있는 블록을 레이아웃에서 완전히 제거
+   (span만 숨기면 감싸고 있는 블록의 높이가 그대로 남습니다) */
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
+[data-testid="stVerticalBlock"] > div:has(.reference-anchor) {
     display: none !important;
 }
 
@@ -554,21 +564,11 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 }
 
 
-/* anchor가 차지하는 첫 번째 블록 위로 당김 */
-
-div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
-[data-testid="stVerticalBlock"] > div:first-child {
-    margin-top: -0.45rem !important;
-    margin-bottom: 0 !important;
-}
-
-
-/* 실제 내용이 들어 있는 가로 행 위로 당김 */
+/* 실제 내용이 들어 있는 가로 행 — 음수 마진 없이 0 */
 
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 [data-testid="stHorizontalBlock"] {
-    margin-top: -0.30rem !important;
-    margin-bottom: 0 !important;
+    margin: 0 !important;
     align-items: center !important;
     gap: 0.65rem !important;
 }
@@ -577,11 +577,7 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 /* Markdown 기본 여백 제거 */
 
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
-[data-testid="stMarkdownContainer"] {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
+[data-testid="stMarkdownContainer"],
 div[data-testid="stVerticalBlockBorderWrapper"]:has(.reference-anchor)
 [data-testid="stMarkdownContainer"] p {
     margin: 0 !important;
