@@ -105,17 +105,18 @@ st.markdown(
 .ahp-score-grid {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
-
     text-align: center;
 
     font-size: 0.82rem;
     font-weight: 600;
     color: #4b5563;
 
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+
     margin-top: 0.35rem;
     margin-bottom: -0.4rem;
 }
-
 
 /* ─────────────────────────────────────────────
    Streamlit 슬라이더
