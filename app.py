@@ -1430,7 +1430,7 @@ if st.session_state.page == 1:
             '판단 방향에 모순이 있는 경우에는 안내된 비교를 수정한 후 진행해 주십시오.'
             '</div>'
 
-            '<div class="cover-time">응답 소요시간　약 25~35분</div>'
+            '<div class="cover-time">응답 소요시간　약 10분 내외</div>'
             '</div>'
         ),
         unsafe_allow_html=True,
