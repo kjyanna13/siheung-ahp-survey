@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """시흥시 지역균형발전 기본계획 — 전문가 AHP 조사 웹폼
 
-6개 분야 · 17개 전략 · 46개 핵심과제 (2026-09-10 문화·여가 개정 반영)
+6개 분야 · 17개 전략 · 46개 핵심과제 (2026-09-15 여가·문화 개정 반영)
 평가기준 K1~K4
 
 분야·전략·과제 수는 hierdata/taskdata에서 읽는다. 계획이 바뀌면 두 파일만 교체하면 된다.
@@ -9,6 +9,7 @@
 
 import json
 import uuid
+from html import escape
 from pathlib import Path
 
 import streamlit as st
@@ -1020,6 +1021,93 @@ div[data-testid="stVerticalBlockBorderWrapper"]:has(.respondent-anchor) input,
     margin-bottom: 0.20rem;
 }
 
+
+/* 3페이지 — 전략·핵심과제 전체 보기 (과제명 + 주요내용) */
+
+.ov-strat {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+
+    font-size: 0.97rem;
+    font-weight: 800;
+    color: #163a63;
+
+    line-height: 1.35;
+
+    margin-top: 0.85rem;
+    margin-bottom: 0.45rem;
+    padding-bottom: 0.3rem;
+
+    border-bottom: 1px solid #e3e9f2;
+}
+
+.ov-strat:first-child {
+    margin-top: 0.1rem;
+}
+
+.ov-sn {
+    flex: 0 0 auto;
+
+    font-size: 0.76rem;
+    font-weight: 800;
+    color: #2456a6;
+
+    background: #eef4ff;
+    border-radius: 5px;
+    padding: 0.10rem 0.42rem;
+}
+
+.ov-task {
+    display: flex;
+    gap: 0.55rem;
+
+    padding: 0.28rem 0 0.28rem 0.15rem;
+}
+
+.ov-code {
+    flex: 0 0 2.5rem;
+
+    font-size: 0.83rem;
+    font-weight: 800;
+    color: #2456a6;
+
+    line-height: 1.45;
+    padding-top: 0.04rem;
+}
+
+.ov-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.ov-name {
+    font-size: 0.90rem;
+    font-weight: 700;
+    color: #1f2937;
+
+    line-height: 1.40;
+}
+
+.ov-desc {
+    font-size: 0.815rem;
+    font-weight: 400;
+    color: #6b7280;
+
+    line-height: 1.45;
+    margin-top: 0.10rem;
+}
+
+@media (max-width: 700px) {
+    .ov-name {
+        font-size: 0.86rem;
+    }
+
+    .ov-desc {
+        font-size: 0.78rem;
+    }
+}
+
 .page-section-text {
     font-size: 0.84rem;
     line-height: 1.45;
@@ -1746,8 +1834,37 @@ elif st.session_state.page == 3:
         expanded=True,
     ):
         st.caption(
-            "평가에 앞서 해당 분야의 전략과 핵심과제 전체 구성을 확인해 주십시오."
+            "평가에 앞서 해당 분야의 전략·핵심과제 구성과 각 과제의 주요내용을 확인해 주십시오."
         )
+
+        def _overview_task(task_code):
+            """과제 한 줄 — 번호 · 과제명 · 주요내용(taskdata 3번째 값)"""
+            _f, task_name, task_desc, strategy_no, task_no = TASKS[task_code]
+
+            # 과제명 앞에 이미 "1-1 " 형태의 번호가 붙어 있으면 떼어 내고
+            # 왼쪽 번호 칸으로 옮긴다.
+            prefix = f"{strategy_no}-{task_no}"
+            display_name = task_name
+            if display_name.startswith(prefix):
+                display_name = display_name[len(prefix):].strip()
+
+            desc_html = (
+                f'<div class="ov-desc">{escape(task_desc)}</div>'
+                if task_desc
+                else ""
+            )
+
+            return (
+                '<div class="ov-task">'
+                f'<div class="ov-code">{escape(prefix)}</div>'
+                '<div class="ov-body">'
+                f'<div class="ov-name">{escape(display_name)}</div>'
+                f'{desc_html}'
+                '</div>'
+                '</div>'
+            )
+
+        overview_html = []
 
         if field not in FLAT:
             for strategy_no, (
@@ -1758,31 +1875,32 @@ elif st.session_state.page == 3:
                 STRAT[field],
                 1,
             ):
-                st.markdown(
-                    f"**전략 {strategy_no}. {strategy_name}**"
+                overview_html.append(
+                    '<div class="ov-strat">'
+                    f'<span class="ov-sn">전략 {strategy_no}</span>'
+                    f'<span>{escape(strategy_name)}</span>'
+                    '</div>'
                 )
 
-                task_lines = [
-                    f"- {TASKS[task_code][1]}"
-                    for task_code in task_codes
-                ]
-
-                st.markdown("\n".join(task_lines))
-
-                if strategy_no < len(STRAT[field]):
-                    st.write("")
+                for task_code in task_codes:
+                    overview_html.append(_overview_task(task_code))
 
         else:
-            st.markdown("**평가대상 핵심과제**")
-            task_lines = []
+            overview_html.append(
+                '<div class="ov-strat">'
+                '<span class="ov-sn">평가대상</span>'
+                '<span>핵심과제</span>'
+                '</div>'
+            )
 
             for _strategy_code, _strategy_name, task_codes in STRAT[field]:
                 for task_code in task_codes:
-                    task_lines.append(
-                        f"- {TASKS[task_code][1]}"
-                    )
+                    overview_html.append(_overview_task(task_code))
 
-            st.markdown("\n".join(task_lines))
+        st.markdown(
+            "".join(overview_html),
+            unsafe_allow_html=True,
+        )
 
     st.markdown(
         (
